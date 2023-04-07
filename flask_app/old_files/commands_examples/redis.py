@@ -1,6 +1,6 @@
 # python shell
 import redis
-from db import redis_db
+from flask_app.database.db import redis_db
 
 
 '''

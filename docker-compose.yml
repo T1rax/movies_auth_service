@@ -14,8 +14,11 @@ services:
   postgres:
     image: postgres:alpine
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./db/schema:/docker-entrypoint-initdb.d
+      - postgres_auth_data:/var/lib/postgresql/auth_data
+    environment:
+      POSTGRES_DB: ${AUTH_DB__NAME}
+      POSTGRES_USER: ${AUTH_DB__USER}
+      POSTGRES_PASSWORD: ${AUTH_DB__PASSWORD}
     env_file:
       - ./.env
 
@@ -33,5 +36,4 @@ services:
 
 
 volumes:
-  postgres_data:
-  elasticsearch_data:
+  postgres_auth_data:

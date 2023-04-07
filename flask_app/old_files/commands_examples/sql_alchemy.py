@@ -1,6 +1,6 @@
-from app import app
-from db import db, init_db
-from db_models import User
+from flask_app.app import app
+from flask_app.database.db import db, init_db
+from flask_app.database.db_models import User
 
 # Подготоваливаем контекст и создаём таблицы
 init_db(app)
