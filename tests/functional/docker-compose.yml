@@ -1,0 +1,37 @@
+version: '3.4'
+services:
+
+  postgres:
+    image: postgres:alpine
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/test_data
+      # - ./db/schema:/docker-entrypoint-initdb.d
+    env_file:
+      - ../../.env
+
+  redis:
+    image: redis:7.0.9-alpine
+    volumes:
+      - redis_test_data:/opt/redis/test_data
+
+  flaskapp:
+    build: ../../flask_app
+    restart: always
+    env_file:
+      - ../../.env
+    depends_on:
+      - postgres
+      - redis
+
+  tests:
+    build: ./
+    env_file:
+      - ../../.env
+    depends_on:
+      - postgres
+      - redis
+      - flaskapp
+
+volumes:
+  postgres_test_data:
+  redis_test_data:
