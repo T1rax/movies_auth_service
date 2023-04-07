@@ -5,7 +5,10 @@ services:
     image: postgres:alpine
     volumes:
       - postgres_test_data:/var/lib/postgresql/test_data
-      # - ./db/schema:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_DB: ${AUTH_DB__NAME}
+      POSTGRES_USER: ${AUTH_DB__USER}
+      POSTGRES_PASSWORD: ${AUTH_DB__PASSWORD}
     env_file:
       - ../../.env
 
