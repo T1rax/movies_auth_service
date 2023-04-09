@@ -19,13 +19,8 @@ class JWTHelper():
         set_refresh_cookies(response, self.refresh_token)
 
     def create_tokens(self):
-        self.create_access()
+        self.access_token = create_access_token(identity=self.user_id)
         self.refresh_token = create_refresh_token(identity=self.user_id)
-    
-    def create_access(self):
-        payload = {'roles': ['basicRole', 'premiumUser']}
-        self.access_token = create_access_token(identity=self.user_id, additional_claims=payload)
-        return self.access_token
     
     def drop_tokens(self, response):
         unset_jwt_cookies(response)
