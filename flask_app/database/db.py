@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 
 db = SQLAlchemy()
-redis_db = redis.Redis(host=configs.mds.host, port=configs.mds.port, db=0)
+jwt_redis_blocklist = redis.Redis(host=configs.mds.host, port=configs.mds.port, db=0, decode_responses=True)
 
 
 def init_db(app: Flask):
