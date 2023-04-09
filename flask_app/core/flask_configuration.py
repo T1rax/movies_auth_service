@@ -1,9 +1,10 @@
-from datetime import datetime
 from datetime import timedelta
-from datetime import timezone
+from core.config import configs
 
 
 def set_flask_configuration(app):
+
+    app.config['SQLALCHEMY_DATABASE_URI'] = configs.db.url
 
     set_jwt_configuration(app)
 

@@ -3,8 +3,15 @@ sys.path.insert(0, '/home/tirax/movies_auth_service')
 
 from flask import Flask
 from flask import jsonify
-from database.db import init_db, jwt_redis_blocklist
+from flask import request
 from core.flask_configuration import set_flask_configuration
+from core.errors import RegistrationException
+from core.config import configs
+
+import redis
+from flask_sqlalchemy import SQLAlchemy
+import uuid
+from sqlalchemy.dialects.postgresql import UUID
 
 from datetime import datetime
 from datetime import timedelta
@@ -22,7 +29,26 @@ app = Flask(__name__)
 
 set_flask_configuration(app)
 
+db = SQLAlchemy(app)
+jwt_redis_blocklist = redis.Redis(host=configs.mds.host, port=configs.mds.port, db=0, decode_responses=True)
 jwt = JWTManager(app)
+
+class User(db.Model):
+    __tablename__ = 'users'
+
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
+    login = db.Column(db.String, unique=True, nullable=False)
+    password = db.Column(db.String, nullable=False)
+    first_name = db.Column(db.String, nullable=False)
+    last_name = db.Column(db.String, nullable=False)
+    roles = db.Column(db.PickleType, nullable=False)
+
+    def __repr__(self):
+        return f'<User {self.login}>' 
+
+
+with app.app_context():
+    db.create_all()
 
 
 #JWT tokens
@@ -74,6 +100,7 @@ async def main_page():
 
 # Account authorization routes
 from routes.authorize import authorize_user
+from routes.sign_up import register_user
 
 @app.route('/authorize', methods=["GET", "POST"])
 @jwt_required(locations=["cookies"])
@@ -100,10 +127,17 @@ async def sign_in():
 
 @app.route('/sign-up', methods=["GET", "POST"])
 async def sign_up():
-    response = jsonify({"msg": "registration successful"})
-    jwt_helper.create_tokens()
-    jwt_helper.set_tokens(response)
-    return response
+    try:
+        data = request.get_json()
+        user = register_user(data)
+        response = jsonify({"msg": "registration successful"})
+
+        jwt_helper.user_id = user.id
+        jwt_helper.create_tokens()
+        jwt_helper.set_tokens(response)
+        return response, 200
+    except RegistrationException as e:
+        return jsonify({"msg": str(e)}), 401
 
 
 
@@ -142,7 +176,6 @@ async def sign_in_history():
 
 
 def main():
-    init_db(app)
     app.run()
 
 
