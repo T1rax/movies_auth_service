@@ -1,6 +1,5 @@
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import create_refresh_token, get_jwt
-from flask_jwt_extended import JWTManager
 from flask_jwt_extended import unset_jwt_cookies, set_access_cookies, set_refresh_cookies
 
 from database.db import jwt_redis_blocklist
