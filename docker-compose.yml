@@ -13,6 +13,7 @@ services:
 
   postgres:
     image: postgres:alpine
+    restart: always
     volumes:
       - postgres_auth_data:/var/lib/postgresql/auth_data
     environment:
@@ -24,6 +25,9 @@ services:
 
   redis:
     image: redis:7.0.9-alpine
+    restart: always
+    volumes:
+      - redis_token_data:/opt/redis/token_data
 
   flaskapp:
     build: flask_app
@@ -37,3 +41,4 @@ services:
 
 volumes:
   postgres_auth_data:
+  redis_token_data:
