@@ -1,7 +1,7 @@
 from core.errors import RegistrationException
 from sqlalchemy.exc import IntegrityError
-from app import db
-from app import User
+from database.db import db
+from database.db_models import User
 
 
 def register_user(body_json):

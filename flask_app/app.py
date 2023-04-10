@@ -19,33 +19,14 @@ from datetime import timezone
 
 from flask_jwt_extended import jwt_required, get_jwt, get_jwt_header
 from flask_jwt_extended import JWTManager
+from database.db import db, init_db
 
 from encryption.jwt import jwt_helper
 
 app = Flask(__name__)
-
 set_flask_configuration(app)
-
-db = SQLAlchemy(app)
 jwt_redis_blocklist = redis.Redis(host=configs.mds.host, port=configs.mds.port, db=0, decode_responses=True)
 jwt = JWTManager(app)
-
-class User(db.Model):
-    __tablename__ = 'users'
-
-    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
-    login = db.Column(db.String, unique=True, nullable=False)
-    password = db.Column(db.String, nullable=False)
-    first_name = db.Column(db.String, nullable=False)
-    last_name = db.Column(db.String, nullable=False)
-    roles = db.Column(db.PickleType, nullable=False)
-
-    def __repr__(self):
-        return f'<User {self.login}>' 
-
-
-with app.app_context():
-    db.create_all()
 
 
 #JWT tokens
@@ -137,7 +118,6 @@ async def sign_up():
         return jsonify({"msg": str(e)}), 401
 
 
-
 # Token-related routes
 # from routes. import
 @app.route('/refresh', methods=["GET", "POST"])
@@ -171,8 +151,12 @@ async def sign_in_history():
     return jsonify({"msg": 'Hello, World! sign-in-history'})
 
 
-
 def main():
+    # Create Tables
+    init_db(app)
+    app.app_context().push()
+    db.create_all()
+
     app.run()
 
 
