@@ -9,7 +9,7 @@ from flask import Flask
 from flask import jsonify
 from flask import request
 from core.flask_configuration import set_flask_configuration
-from core.errors import RegistrationException, LoginException
+from core.errors import RegistrationException, UserIdException
 from core.config import configs
 
 import redis
@@ -141,6 +141,7 @@ async def main_page():
 from routes.authorize import authorize_user
 from routes.sign_up import register_user
 from routes.sign_in import login_user
+from routes.get_user_description import user_description
 
 @app.route('/authorize', methods=["GET", "POST"])
 @jwt_required(locations=["cookies"])
@@ -212,8 +213,16 @@ async def change_role():
 @app.route('/get-user-description', methods=["GET", "POST"])
 @jwt_required(locations=["cookies"])
 async def get_user_description():
-    print('hello!!!!!!!!!!')
-    return jsonify({"msg": 'Hello, World! get-user-description'})
+    try:
+        data = request.get_json()
+        user = user_description(data)
+        response = jsonify({"msg": user})
+
+        return response, 200
+    except UserIdException as e:
+        return jsonify({"msg": str(e)}), 401
+    except Exception as e:
+        return jsonify({"msg": 'some error'}), 401
 
 
 @app.route('/sign-in-history', methods=["GET"])
