@@ -9,13 +9,14 @@ from flask import Flask
 from flask import jsonify
 from flask import request
 from core.flask_configuration import set_flask_configuration
-from core.errors import RegistrationException
+from core.errors import RegistrationException, LoginException
 from core.config import configs
 
 import redis
 from flask_sqlalchemy import SQLAlchemy
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from datetime import datetime
 from datetime import timedelta
@@ -53,6 +54,12 @@ class User(db.Model):
 
     def __repr__(self):
         return f'<User {self.login}>'
+
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
 
 
 class ActionType(enum.Enum):
@@ -133,6 +140,7 @@ async def main_page():
 # Account authorization routes
 from routes.authorize import authorize_user
 from routes.sign_up import register_user
+from routes.sign_in import login_user
 
 @app.route('/authorize', methods=["GET", "POST"])
 @jwt_required(locations=["cookies"])
@@ -151,10 +159,17 @@ async def logout():
 
 @app.route('/sign-in', methods=["GET", "POST"])
 async def sign_in():
-    response = jsonify({"msg": "login successful"})
-    jwt_helper.create_tokens()
-    jwt_helper.set_tokens(response)
-    return response
+    try:
+        data = request.get_json()
+        user = login_user(data)
+        response = jsonify({"msg": "login successful"})
+
+        jwt_helper.user_id = user.id
+        jwt_helper.create_tokens()
+        jwt_helper.set_tokens(response)
+        return response, 200
+    except Exception as e:
+        return jsonify({"msg": str(e)}), 401
 
 
 @app.route('/sign-up', methods=["GET", "POST"])

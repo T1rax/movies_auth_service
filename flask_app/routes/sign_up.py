@@ -11,11 +11,12 @@ def register_user(body_json):
     # with app.app_context():
     #     db.create_all()
 
-    user = User(login=body_json.get('login'), 
-                password=body_json.get('password'), 
-                first_name=body_json.get('first_name'), 
+    user = User(login=body_json.get('login'),
+                first_name=body_json.get('first_name'),
                 last_name=body_json.get('last_name'), 
                 roles=['basicRole'])
+
+    user.set_password(body_json.get('password'))
 
     try:
         db.session.add(user)
