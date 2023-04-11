@@ -158,6 +158,7 @@ async def logout():
 
 
 @app.route('/sign-in', methods=["GET", "POST"])
+@jwt_required(locations=["cookies"])
 async def sign_in():
     try:
         data = request.get_json()
