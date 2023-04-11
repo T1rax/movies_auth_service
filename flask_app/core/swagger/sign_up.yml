@@ -1,0 +1,33 @@
+Registers user and returns JWT access and refresh tokens
+There is additional information
+---
+parameters:
+  - name: login
+    in: json
+    type: string
+    example: 'test'
+    required: true
+    description: 'User email'
+  - name: password
+    in: json
+    type: string
+    example: 'test'
+    required: true
+    description: 'User password'
+  - name: first_name
+    in: json
+    type: string
+    example: 'test'
+    required: true
+    description: 'User First Name'
+  - name: last_name
+    in: json
+    type: string
+    example: 'test'
+    required: true
+    description: 'user Last Name'
+responses:
+  200:
+    description: 'User successfully registered'
+  401:
+    description: 'User already exists'

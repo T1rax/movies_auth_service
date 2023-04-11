@@ -1,0 +1,14 @@
+Description
+---
+parameters:
+  - name: access_token_cookie
+    in: cookie
+    type: string
+    required: true
+  - name: refresh_token_cookie
+    in: cookie
+    type: string
+    required: true
+responses:
+  200:
+    description: 'Ok'

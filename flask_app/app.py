@@ -8,9 +8,12 @@ sys.path.insert(0, '/home/tirax/movies_auth_service')
 from flask import Flask
 from flask import jsonify
 from flask import request
+from flasgger import Swagger
+from flasgger import swag_from
 from core.flask_configuration import set_flask_configuration
 from core.errors import RegistrationException
 from core.config import configs
+# import core.swagger as swagger_specs
 
 import redis
 from flask_sqlalchemy import SQLAlchemy
@@ -30,6 +33,7 @@ app = Flask(__name__)
 
 set_flask_configuration(app)
 
+swagger = Swagger(app)
 db = SQLAlchemy(app)
 jwt_redis_blocklist = redis.Redis(host=configs.mds.host, port=configs.mds.port, db=0, decode_responses=True)
 jwt = JWTManager(app)
@@ -134,13 +138,18 @@ async def main_page():
 from routes.authorize import authorize_user
 from routes.sign_up import register_user
 
+# @swag_from('core/swagger/authorize.yml')
 @app.route('/authorize', methods=["GET", "POST"])
 @jwt_required(locations=["cookies"])
 async def authorize():
+    """
+    file: core/swagger/authorize.yml
+    """
     response = authorize_user(get_jwt())
     return jsonify(response), 200
 
 
+# @swag_from('core/swagger/logout.yml')
 @app.route('/logout', methods=["GET", "POST"])
 @jwt_required(locations=["cookies"])
 async def logout():
@@ -149,6 +158,7 @@ async def logout():
     return response
 
 
+# @swag_from('core/swagger/sign_in.yml')
 @app.route('/sign-in', methods=["GET", "POST"])
 async def sign_in():
     response = jsonify({"msg": "login successful"})
@@ -157,8 +167,11 @@ async def sign_in():
     return response
 
 
+# @swag_from('core/swagger/sign_up.yml')
 @app.route('/sign-up', methods=["GET", "POST"])
 async def sign_up():
+    """Registers user and returns JWT access and refresh tokens
+    """
     try:
         data = request.get_json()
         user = register_user(data)
@@ -175,6 +188,7 @@ async def sign_up():
 
 # Token-related routes
 # from routes. import
+# @swag_from('core/swagger/refresh.yml')
 @app.route('/refresh', methods=["GET", "POST"])
 @jwt_required(refresh=True, locations=["cookies"])
 async def refresh():
@@ -186,6 +200,7 @@ async def refresh():
 
 # Roles routes
 # from routes. import
+# @swag_from('core/swagger/change_role.yml')
 @app.route('/change-role', methods=["GET", "POST"])
 @jwt_required(locations=["cookies"])
 async def change_role():
@@ -194,12 +209,14 @@ async def change_role():
 
 # Support routes
 # from routes. import
+# @swag_from('core/swagger/get_user_description.yml')
 @app.route('/get-user-description', methods=["GET"])
 @jwt_required(locations=["cookies"])
 async def get_user_description():
     return jsonify({"msg": 'Hello, World! get-user-description'})
 
 
+# @swag_from('core/swagger/sign_in_history.yml')
 @app.route('/sign-in-history', methods=["GET"])
 @jwt_required(locations=["cookies"])
 async def sign_in_history():

@@ -1,6 +1,6 @@
 import requests
 
-data = {'login': 'test_login1',
+data = {'login': 'test_login10',
         'password': 'test_password',
         'first_name': 'Nikola',
         'last_name': 'Lenivetc'}
