@@ -1,4 +1,4 @@
-from core.errors import LoginException, PasswordException
+from core.errors import LoginException
 from app import User
 
 
@@ -10,7 +10,7 @@ def login_user(body_json):
         pswd = user.check_password(body_json.get('password'))
 
     if not pswd:
-        raise PasswordException('invalid password')
+        raise LoginException('invalid password')
     else:
         return user
 

@@ -3,6 +3,3 @@ class RegistrationException(Exception):
 
 class LoginException(Exception):
     pass
-
-class PasswordException(Exception):
-    pass

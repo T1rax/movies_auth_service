@@ -158,7 +158,6 @@ async def logout():
 
 
 @app.route('/sign-in', methods=["GET", "POST"])
-@jwt_required(locations=["cookies"])
 async def sign_in():
     try:
         data = request.get_json()
@@ -192,7 +191,7 @@ async def sign_up():
 # Token-related routes
 # from routes. import
 @app.route('/refresh', methods=["GET", "POST"])
-@jwt_required(refresh=True, locations=["cookies"])
+@jwt_required(refresh=True, locations=["json"])
 async def refresh():
     response = jsonify({"msg": "tokens refreshed"})
     jwt_helper.create_tokens()
@@ -210,9 +209,10 @@ async def change_role():
 
 # Support routes
 # from routes. import
-@app.route('/get-user-description', methods=["GET"])
+@app.route('/get-user-description', methods=["GET", "POST"])
 @jwt_required(locations=["cookies"])
 async def get_user_description():
+    print('hello!!!!!!!!!!')
     return jsonify({"msg": 'Hello, World! get-user-description'})
 
 
