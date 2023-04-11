@@ -21,34 +21,34 @@ class User(UUIDMixin, db.Model):
     __tablename__ = 'users'
 
     login = db.Column(db.String(100), unique=True, nullable=False)
-    email = db.Column(db.String(100), unique=True, nullable=False)
+    # email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String, nullable=False)
     first_name = db.Column(db.String(100), nullable=False)
     last_name = db.Column(db.String(100), nullable=False)
-    role_id = db.Column(UUID(as_uuid=True), db.ForeignKey('role.id'), nullable=False) # вторичный ключ
-    histories = db.relationship('UserHistory', backref='user')
+    roles = db.Column(db.PickleType, nullable=False)
+    # histories = db.relationship('UserHistory', backref='user')
 
     def __repr__(self):
         return f'<User {self.login}>'
 
 
-class RoleType(enum.Enum):
-    """ Role types for User """
-    default = 'default'
-    subscribers = 'subscribers'
-    staff = 'staff'
-    admin = 'admin'
+# class RoleType(enum.Enum):
+#     """ Role types for User """
+#     default = 'default'
+#     subscribers = 'subscribers'
+#     staff = 'staff'
+#     admin = 'admin'
 
 
-class Role(UUIDMixin, db.Model):
-    """ Model for user's roles"""
-    __tablename__ = 'roles'
+# class Role(UUIDMixin, db.Model):
+#     """ Model for user's roles"""
+#     __tablename__ = 'roles'
 
-    name = db.Column(db.Enum(RoleType))
-    users = db.relationship('User', backref='role')
+#     name = db.Column(db.Enum(RoleType))
+#     users = db.relationship('User', backref='role')
 
-    def __repr__(self):
-        return f'<Role {self.name}>'
+#     def __repr__(self):
+#         return f'<Role {self.name}>'
 
 
 class ActionType(enum.Enum):
