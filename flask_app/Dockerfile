@@ -4,6 +4,8 @@ WORKDIR /opt/app
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
+ENV PYTHONPATH "${PYTHONPATH}:/opt/app"
+ENV FLASK_APP "app.py"
 
 COPY requirements.txt requirements.txt
 

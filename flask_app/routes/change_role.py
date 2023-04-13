@@ -1,5 +1,6 @@
 from core.errors import UserIdException
-from app import User, db
+from database.db import db
+from database.models import User
 from core.config import configs
 
 
