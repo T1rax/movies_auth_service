@@ -11,7 +11,7 @@ from flask import request
 from flasgger import Swagger
 from flasgger import swag_from
 from core.flask_configuration import set_flask_configuration
-from core.errors import RegistrationException
+from core.errors import RegistrationException, UserIdException
 from core.config import configs
 # import core.swagger as swagger_specs
 
@@ -19,6 +19,7 @@ import redis
 from flask_sqlalchemy import SQLAlchemy
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from datetime import datetime
 from datetime import timedelta
@@ -57,6 +58,12 @@ class User(db.Model):
 
     def __repr__(self):
         return f'<User {self.login}>'
+
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
 
 
 class ActionType(enum.Enum):
@@ -137,6 +144,8 @@ async def main_page():
 # Account authorization routes
 from routes.authorize import authorize_user
 from routes.sign_up import register_user
+from routes.sign_in import login_user
+from routes.get_user_description import user_description
 
 # @swag_from('core/swagger/authorize.yml')
 @app.route('/authorize', methods=["GET", "POST"])
@@ -161,10 +170,17 @@ async def logout():
 # @swag_from('core/swagger/sign_in.yml')
 @app.route('/sign-in', methods=["GET", "POST"])
 async def sign_in():
-    response = jsonify({"msg": "login successful"})
-    jwt_helper.create_tokens()
-    jwt_helper.set_tokens(response)
-    return response
+    try:
+        data = request.get_json()
+        user = login_user(data)
+        response = jsonify({"msg": "login successful"})
+
+        jwt_helper.user_id = user.id
+        jwt_helper.create_tokens()
+        jwt_helper.set_tokens(response)
+        return response, 200
+    except Exception as e:
+        return jsonify({"msg": str(e)}), 401
 
 
 # @swag_from('core/swagger/sign_up.yml')
@@ -190,7 +206,7 @@ async def sign_up():
 # from routes. import
 # @swag_from('core/swagger/refresh.yml')
 @app.route('/refresh', methods=["GET", "POST"])
-@jwt_required(refresh=True, locations=["cookies"])
+@jwt_required(refresh=True, locations=["json"])
 async def refresh():
     response = jsonify({"msg": "tokens refreshed"})
     jwt_helper.create_tokens()
@@ -213,7 +229,16 @@ async def change_role():
 @app.route('/get-user-description', methods=["GET"])
 @jwt_required(locations=["cookies"])
 async def get_user_description():
-    return jsonify({"msg": 'Hello, World! get-user-description'})
+    try:
+        data = request.get_json()
+        user = user_description(data)
+        response = jsonify({"msg": user})
+
+        return response, 200
+    except UserIdException as e:
+        return jsonify({"msg": str(e)}), 401
+    except Exception as e:
+        return jsonify({"msg": 'some error'}), 401
 
 
 # @swag_from('core/swagger/sign_in_history.yml')
