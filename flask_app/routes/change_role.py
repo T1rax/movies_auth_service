@@ -16,14 +16,14 @@ def user_change_role(body_json):
             new_role = body_json.get('role')
 
             if new_role not in configs.main.existing_roles:
-                return 'Not allowed Role', None, None
+                return {"msg":'Not allowed Role'}
 
             if new_role in roles:
-                return 'Role already exists', user.login, user.roles
+                return {"msg":'Role already exists'}
 
             roles.append(new_role)
             user.roles = roles
             db.session.commit()
-            return 'User roles updated', user.login, user.roles
+            return {"msg":'User roles updated', "user":user.login, "roles":user.roles}
         except Exception as e:
             print(e)

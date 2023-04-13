@@ -40,7 +40,7 @@ response1 = requests.get('http://127.0.0.1/sign-in', json=data_login)
 # response = requests.get('http://127.0.0.1/get-user-description', cookies=response1.cookies, json=data_desc)
 
 data_change = {'id': 'd5660506-56ec-4583-92eb-15ecfec321b4',
-               'role': 'premiumUser'}
+               'role': 'admin'}
 response = requests.get('http://127.0.0.1/change-role', cookies=response1.cookies, json=data_change)
 
 

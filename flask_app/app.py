@@ -208,10 +208,8 @@ async def refresh():
 async def change_role():
     try:
         data = request.get_json()
-        msg, user, roles = user_change_role(data)
-        response = jsonify({"msg": msg,
-                            "user": user,
-                            "roles": roles})
+        raw_response = user_change_role(data)
+        response = jsonify(raw_response)
 
         return response, 200
     except UserIdException as e:
