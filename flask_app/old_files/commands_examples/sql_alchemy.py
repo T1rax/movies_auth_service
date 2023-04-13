@@ -2,7 +2,7 @@ from app import app
 from database.models import User, db
 
 # Подготоваливаем контекст и создаём таблицы
-init_db(app)
+# init_db(app)
 app.app_context().push()
 db.create_all()
 
