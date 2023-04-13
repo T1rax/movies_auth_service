@@ -50,7 +50,7 @@ class User(db.Model):
     password = db.Column(db.String, nullable=False)
     first_name = db.Column(db.String(100), nullable=False)
     last_name = db.Column(db.String(100), nullable=False)
-    roles = db.Column(db.PickleType, nullable=False)
+    roles = db.Column(db.PickleType(), nullable=False)
 
     def __repr__(self):
         return f'<User {self.login}>'
@@ -208,8 +208,10 @@ async def refresh():
 async def change_role():
     try:
         data = request.get_json()
-        user = user_change_role(data)
-        response = jsonify({"msg": user + ' role changed'})
+        msg, user, roles = user_change_role(data)
+        response = jsonify({"msg": msg,
+                            "user": user,
+                            "roles": roles})
 
         return response, 200
     except UserIdException as e:

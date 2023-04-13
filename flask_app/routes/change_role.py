@@ -1,5 +1,6 @@
 from core.errors import UserIdException
 from app import User, db
+from core.config import configs
 
 
 def user_change_role(body_json):
@@ -11,12 +12,18 @@ def user_change_role(body_json):
         raise UserIdException('invalid ID')
     else:
         try:
-            roles = user.roles
-            roles.append(body_json.get('role'))
-            print(roles)
+            roles = list(user.roles)
+            new_role = body_json.get('role')
 
+            if new_role not in configs.main.existing_roles:
+                return 'Not allowed Role', None, None
+
+            if new_role in roles:
+                return 'Role already exists', user.login, user.roles
+
+            roles.append(new_role)
             user.roles = roles
             db.session.commit()
-            return user.login
+            return 'User roles updated', user.login, user.roles
         except Exception as e:
             print(e)

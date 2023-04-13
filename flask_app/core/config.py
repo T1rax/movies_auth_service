@@ -4,6 +4,7 @@ from pydantic import BaseSettings, Field
 class MainConfig(BaseSettings):
     """ Project settings """
     log_level: str = Field('INFO')
+    existing_roles: list = Field(['basicRole', 'premiumUser', 'admin', 'superUser'])
 
 
 class MemoryDataStorageConfig(BaseSettings):
