@@ -1,18 +1,25 @@
 Description
 ---
-parameters:
-  - name: user_id
-    in: json
-    type: string
-    required: true
-  - name: access_token_cookie
-    in: cookie
-    type: string
-    required: true
-  - name: refresh_token_cookie
-    in: cookie
-    type: string
-    required: true
-responses:
-  200:
-    description: 'Ok'
+get:
+  summary: Dives description for provided user
+  tags:
+    - Additional
+  parameters:
+    - name: user_id
+      in: json
+      required: true
+      schema:
+        type: string
+    - name: access_token_cookie
+      in: cookie
+      required: true
+      schema:
+        type: string
+    - name: refresh_token_cookie
+      in: cookie
+      required: true
+      schema:
+        type: string
+  responses:
+    200:
+      description: 'Ok'

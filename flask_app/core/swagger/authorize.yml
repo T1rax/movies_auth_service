@@ -1,14 +1,21 @@
-Description
 ---
-parameters:
-  - name: access_token_cookie
-    in: cookie
-    type: string
-    required: true
-  - name: refresh_token_cookie
-    in: cookie
-    type: string
-    required: true
-responses:
-  200:
-    description: 'Ok'
+get:
+  summary: Check if user is logged in
+  description: >
+    Returns main user information for success
+  tags:
+    - Authentification
+  parameters:
+    - name: access_token_cookie
+      in: cookie
+      required: true
+      schema:
+        type: string
+    - name: refresh_token_cookie
+      in: cookie
+      required: true
+      schema:
+        type: string
+  responses:
+    200:
+      description: Ok

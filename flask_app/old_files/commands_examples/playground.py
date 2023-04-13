@@ -30,22 +30,22 @@ import requests
 
 # Вова
 
-data = {'login': 'test_login1',
-        'password': 'test_password',
-        'first_name': 'Nikola',
-        'last_name': 'Lenivetc'}
+# data = {'login': 'test_login1',
+#         'password': 'test_password',
+#         'first_name': 'Nikola',
+#         'last_name': 'Lenivetc'}
 
-response = requests.post('http://127.0.0.1/auth/sign-up', json=data)
+# response = requests.post('http://127.0.0.1/auth/sign-up', json=data)
 
 
-# data_login = {'login': 'test_login1',
-#               'password': 'test_password'}
-# response1 = requests.get('http://127.0.0.1/auth/sign-in', json=data_login)
+data_login = {'login': 'test_login1',
+              'password': 'test_password'}
+response1 = requests.get('http://127.0.0.1/auth/sign-in', json=data_login)
 
 # print(response1.cookies)
 
-# data_desc = {'id': 'd5660506-56ec-4583-92eb-15ecfec321b4'}
-# response = requests.get('http://127.0.0.1/auth/get-user-description', cookies=response1.cookies, json=data_desc)
+data_desc = {'id': '061b2a67-8a44-40f0-beb2-a668781281ba'}
+response = requests.get('http://127.0.0.1/auth/get-user-description', cookies=response1.cookies, json=data_desc)
 
 # data_change = {'id': 'd5660506-56ec-4583-92eb-15ecfec321b4',
 #                'role': 'admin'}
@@ -53,5 +53,5 @@ response = requests.post('http://127.0.0.1/auth/sign-up', json=data)
 
 
 print(response.text)
-print('-----------------------------')
-print(response.cookies)
+# print('-----------------------------')
+# print(response.cookies)

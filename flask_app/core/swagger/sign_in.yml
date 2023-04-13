@@ -1,18 +1,26 @@
 Description
 ---
-parameters:
-  - name: login
-    in: json
-    type: string
-    example: 'test'
-    required: true
-    description: 'User email'
-  - name: password
-    in: json
-    type: string
-    example: 'test'
-    required: true
-    description: 'User password'
-responses:
-  200:
-    description: 'Ok'
+post:
+  summary: Sign-ins a user
+  description: >
+    In success returns pair of JWT
+  tags:
+    - Authentification
+  parameters:
+    - name: login
+      in: json
+      example: your@mail.com
+      description: User email
+      required: true
+      schema:
+        type: string
+    - name: password
+      in: json
+      example: 123qwer
+      description: User password
+      required: true
+      schema:
+        type: string
+  responses:
+    200:
+      description: 'Ok'

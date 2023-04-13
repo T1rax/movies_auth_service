@@ -1,14 +1,22 @@
 Description
 ---
-parameters:
-  - name: access_token_cookie
-    in: cookie
-    type: string
-    required: true
-  - name: refresh_token_cookie
-    in: cookie
-    type: string
-    required: true
-responses:
-  200:
-    description: 'Ok'
+post:
+  summary: Gives new pair of JWT
+  description: >
+    Removes old tokens and places them in a black list. Gives new pair of tokens.
+  tags:
+    - Tokens
+  parameters:
+    - name: access_token_cookie
+      in: cookie
+      required: true
+      schema:
+        type: string
+    - name: refresh_token_cookie
+      in: cookie
+      required: true
+      schema:
+        type: string
+  responses:
+    200:
+      description: 'Ok'
