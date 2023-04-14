@@ -14,15 +14,24 @@ def user_change_role(body_json):
     else:
         try:
             roles = list(user.roles)
-            new_role = body_json.get('role')
+            target_role = body_json.get('role')
+            action = body_json.get('action_type')
 
-            if new_role not in configs.main.existing_roles:
-                return {"msg":'Not allowed Role'}
+            if action == 'add':
+                if target_role not in configs.main.existing_roles or target_role == 'superUser':
+                    return {"msg":'Not allowed Role'}
 
-            if new_role in roles:
-                return {"msg":'Role already exists'}
+                if target_role in roles:
+                    return {"msg":'Role already exists'}
 
-            roles.append(new_role)
+                roles.append(target_role)
+
+            elif action == 'delete':
+                if target_role in roles and target_role != 'superUser' and target_role != 'baseRole':
+                    roles.remove(target_role)
+                else:
+                    return {"msg": 'Delete is not allowed'}
+
             user.roles = roles
             db.session.commit()
             return {"msg":'User roles updated', "user":user.login, "roles":user.roles}
