@@ -1,24 +1,35 @@
-from core.errors import HistoryException, UserIdException
+from flask_jwt_extended import get_jwt
+
+from core.errors import HistoryException
 from database.db import db
 from database.models import User, UserHistory
-from core.config import configs
 
 
 def get_history(request):
-    body_json = request.get_json()
-    user_id = body_json.get('id')
-    user = UserHistory.query.filter_by(user_id=user_id).first()
-
-    if not user:
-        raise UserIdException('invalid ID')
+    user_jwt = get_jwt()['userid']
+    user = User.query.filter_by(id=user_jwt).first()
+    if 'admin' in user.roles or 'superUser' in user.roles:
+        body_json = request.get_json()
+        user_id = body_json.get('id')
     else:
-        return {
-            'user_id': user.user_id,
-            'useragent': user.useragent,
-            'remote_addr': user.remote_addr,
-            'referrer': user.referrer,
-            'action': user.action.value,
-        }
+        user_id = get_jwt()['userid']
+
+    history = UserHistory.query.filter_by(user_id=user_id)
+
+    if not history:
+        raise HistoryException('No history')
+    else:
+        res = []
+        for user in history:
+             res.append({
+                'user_id': user.user_id,
+                'useragent': user.useragent,
+                'remote_addr': user.remote_addr,
+                'referrer': user.referrer,
+                'action': user.action.value,
+                'action_time': user.timestamp,
+            })
+        return res
 
 
 def add_history(request, user_id, action):
