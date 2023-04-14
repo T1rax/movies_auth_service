@@ -3,19 +3,21 @@ services:
 
   postgres:
     image: postgres:alpine
+    restart: always
     volumes:
-      - postgres_test_data:/var/lib/postgresql/test_data
+      - postgres_auth_test_data:/var/lib/postgresql/auth_test_data
     environment:
       POSTGRES_DB: ${AUTH_DB__NAME}
       POSTGRES_USER: ${AUTH_DB__USER}
       POSTGRES_PASSWORD: ${AUTH_DB__PASSWORD}
     env_file:
-      - ../../.env
+      - ./.env
 
   redis:
     image: redis:7.0.9-alpine
+    restart: always
     volumes:
-      - redis_test_data:/opt/redis/test_data
+      - redis_auth_test_data:/opt/redis/test_auth_data
 
   flaskapp:
     build: ../../flask_app
@@ -36,5 +38,5 @@ services:
       - flaskapp
 
 volumes:
-  postgres_test_data:
-  redis_test_data:
+  postgres_auth_test_data:
+  redis_auth_test_data:
