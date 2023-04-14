@@ -1,0 +1,11 @@
+#Imports for local testing
+import sys
+sys.path.insert(0, '/home/tirax/movies_auth_service/tests/functional')
+sys.path.insert(0, '/home/seo/proj/sprint_5/movies_auth_service/tests/functional')
+
+
+pytest_plugins = (
+    'fixtures.flask',
+    'fixtures.mds',
+    'fixtures.aiohttp'
+    )

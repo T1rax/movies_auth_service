@@ -19,14 +19,14 @@ services:
     volumes:
       - redis_auth_test_data:/opt/redis/test_auth_data
 
-  flaskapp:
-    build: ../../flask_app
-    restart: always
-    env_file:
-      - ../../.env
-    depends_on:
-      - postgres
-      - redis
+  # flaskapp:
+  #   build: ../../flask_app
+  #   restart: always
+  #   env_file:
+  #     - ../../.env
+  #   depends_on:
+  #     - postgres
+  #     - redis
 
   tests:
     build: ./
