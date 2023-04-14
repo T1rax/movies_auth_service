@@ -1,0 +1,43 @@
+Registers user and returns JWT access and refresh tokens
+There is additional information
+---
+post:
+  summary: Registers user
+  description: >
+    In success returns pair of JWT
+  tags:
+    - Authentification
+  parameters:
+    - name: login
+      in: json
+      example: your@mail.com
+      description: User email
+      required: true
+      schema:
+        type: string
+    - name: password
+      in: json
+      example: 123qwer
+      description: User password
+      required: true
+      schema:
+        type: string
+    - name: first_name
+      in: json
+      example: Ivan
+      description: User First Name
+      required: true
+      schema:
+        type: string
+    - name: last_name
+      in: json
+      example: Ivanov
+      description: User Last Name
+      required: true
+      schema:
+        type: string
+  responses:
+    200:
+      description: User successfully registered
+    401:
+      description: User already exists

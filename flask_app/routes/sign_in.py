@@ -1,5 +1,5 @@
 from core.errors import LoginException
-from app import User
+from database.models import User
 
 
 def login_user(body_json):

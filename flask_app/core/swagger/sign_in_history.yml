@@ -1,0 +1,20 @@
+Description
+---
+get:
+  summary: Gives login history
+  tags:
+    - Additional
+  parameters:
+    - name: access_token_cookie
+      in: cookie
+      required: true
+      schema:
+        type: string
+    - name: refresh_token_cookie
+      in: cookie
+      required: true
+      schema:
+        type: string
+  responses:
+    200:
+      description: 'Ok'

@@ -1,0 +1,22 @@
+Description
+---
+post:
+  summary: Loggs out user
+  description: >
+    deletes JWT cookies and places them in black list
+  tags:
+    - Authentification
+  parameters:
+    - name: access_token_cookie
+      in: cookie
+      required: true
+      schema:
+        type: string
+    - name: refresh_token_cookie
+      in: cookie
+      required: true
+      schema:
+        type: string
+  responses:
+    200:
+      description: 'Ok'

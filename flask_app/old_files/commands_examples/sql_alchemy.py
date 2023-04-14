@@ -1,9 +1,8 @@
-from flask_app.app import app
-from flask_app.database.db import db, init_db
-from flask_app.database.db_models import User
+from app import app
+from database.models import User, db
 
 # Подготоваливаем контекст и создаём таблицы
-init_db(app)
+# init_db(app)
 app.app_context().push()
 db.create_all()
 

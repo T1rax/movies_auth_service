@@ -1,5 +1,5 @@
 from core.errors import UserIdException
-from app import User
+from database.models import User
 
 
 def user_description(body_json):
