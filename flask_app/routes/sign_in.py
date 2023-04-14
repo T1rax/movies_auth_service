@@ -12,5 +12,6 @@ def login_user(body_json):
     if not pswd:
         raise LoginException('invalid password')
     else:
+        print(111111111111111, user.id)
         return user
 

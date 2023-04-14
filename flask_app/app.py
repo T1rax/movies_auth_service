@@ -1,7 +1,7 @@
 import enum
 import sys
 
-from sqlalchemy import Enum
+from sqlalchemy import Enum, PickleType
 
 sys.path.insert(0, '/home/tirax/movies_auth_service')
 
@@ -50,7 +50,7 @@ class User(db.Model):
     password = db.Column(db.String, nullable=False)
     first_name = db.Column(db.String(100), nullable=False)
     last_name = db.Column(db.String(100), nullable=False)
-    roles = db.Column(db.PickleType, nullable=False)
+    roles = db.Column(db.PickleType(), nullable=False)
 
     def __repr__(self):
         return f'<User {self.login}>'
@@ -142,6 +142,7 @@ from routes.authorize import authorize_user
 from routes.sign_up import register_user
 from routes.sign_in import login_user
 from routes.get_user_description import user_description
+from routes.change_role import user_change_role
 
 @app.route('/authorize', methods=["GET", "POST"])
 @jwt_required(locations=["cookies"])
@@ -205,7 +206,17 @@ async def refresh():
 @app.route('/change-role', methods=["GET", "POST"])
 @jwt_required(locations=["cookies"])
 async def change_role():
-    return jsonify({"msg": 'Hello, World! change-role'})
+    try:
+        data = request.get_json()
+        raw_response = user_change_role(data)
+        response = jsonify(raw_response)
+
+        return response, 200
+    except UserIdException as e:
+        return jsonify({"msg": str(e)}), 401
+    except Exception as e:
+        print(e)
+        return jsonify({"msg": 'some error'}), 401
 
 
 # Support routes
