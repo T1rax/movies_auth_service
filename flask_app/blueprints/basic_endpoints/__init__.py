@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
 import json
+import click
 from flask_jwt_extended import jwt_required, get_jwt
 
 from core.errors import RegistrationException, UserIdException
@@ -8,6 +9,15 @@ from apispec_fromfile import from_file
 
 blueprint = Blueprint('auth', __name__, url_prefix='/auth')
 
+
+from routes.superuser import create_superuser
+@blueprint.cli.command('createsuperuser')
+@click.argument('name')
+@click.argument('password')
+def create_su(name, password):
+    data = create_superuser(name, password)
+    print(data)
+    return True
 
  # Test pages
 @blueprint.route('/', methods=["GET", "POST"])

@@ -22,8 +22,8 @@ class User(db.Model):
     login = db.Column(db.String(100), unique=True, nullable=False)
     # email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String, nullable=False)
-    first_name = db.Column(db.String(100), nullable=False)
-    last_name = db.Column(db.String(100), nullable=False)
+    first_name = db.Column(db.String(100), nullable=True)
+    last_name = db.Column(db.String(100), nullable=True)
     roles = db.Column(db.PickleType(), nullable=False)
 
     def __repr__(self):
