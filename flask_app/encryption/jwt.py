@@ -9,25 +9,36 @@ from datetime import datetime
 from datetime import timedelta
 from datetime import timezone
 
-from database.db import jwt_redis_blocklist
+from database.db import db, jwt_redis_blocklist
 from datetime import datetime as dt
+from database.models import User
 
 
 class JWTHelper():
     def __init__(self):
         self.user_id = "example_user"
+        self.user = None
         self.access_token = None
         self.refresh_token = None
         pass
+
+    def get_additional_claims(self):
+        user = User.query.filter_by(id=self.user_id).first()
+        return {
+            "roles": user.roles,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+        }
 
     def set_tokens(self, response):
         set_access_cookies(response, self.access_token)
         set_refresh_cookies(response, self.refresh_token)
 
     def create_tokens(self):
-        self.access_token = create_access_token(identity=self.user_id)
+        claims = self.get_additional_claims()
+        self.access_token = create_access_token(identity=self.user_id, additional_claims=claims)
         self.refresh_token = create_refresh_token(identity=self.user_id)
-    
+
     def drop_tokens(self, response):
         unset_jwt_cookies(response)
 
@@ -71,18 +82,5 @@ def create_jwt(app):
         jti = jwt_payload["jti"]
         token_in_redis = jwt_redis_blocklist.get(jti)
         return token_in_redis is not None
-
-
-    # Using the additional_claims_loader, we can specify a method that will be
-    # called when creating JWTs. The decorated method must take the identity
-    # we are creating a token for and return a dictionary of additional
-    # claims to add to the JWT.
-    @jwt.additional_claims_loader
-    def add_claims_to_access_token(identity):
-        return {
-            "roles": ['basicRole', 'premiumUser'],
-            "first_name": "Ivan",
-            "last_name": 'Ivanov',
-        }
     
     return jwt

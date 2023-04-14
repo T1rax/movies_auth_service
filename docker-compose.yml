@@ -36,6 +36,8 @@ services:
     restart: on-failure
     env_file:
       - ./.env
+    volumes:
+      - ./flask_app/migrations:/opt/app/migrations
     depends_on:
       - postgres
       - redis
