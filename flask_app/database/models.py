@@ -51,7 +51,9 @@ class UserHistory(db.Model):
                    default=uuid.uuid4,
                    unique=True,
                    nullable=False)
-    useragent = db.Column(db.String(100), nullable=False)
+    useragent = db.Column(db.String(500), nullable=False)
+    remote_addr = db.Column(db.String(500), nullable=False)
+    referrer = db.Column(db.String(500), nullable=True)
     action = db.Column(Enum(ActionType))
     timestamp = db.Column(db.DateTime, default=datetime.now())
     user_id = db.Column(UUID(as_uuid=True), db.ForeignKey('users.id'))

@@ -44,13 +44,16 @@ response1 = requests.get('http://127.0.0.1/auth/sign-in', json=data_login)
 
 # print(response1.cookies)
 
-# data_desc = {'id': 'b14723fd-8751-45ce-ae63-22aee5a09efc'}
+# data_desc = {'id': '10dd44fb-ff6d-4b20-80be-b72ecebc3603'}
 # response = requests.get('http://127.0.0.1/auth/get-user-description', cookies=response1.cookies, json=data_desc)
 
-data_change = {'id': 'b14723fd-8751-45ce-ae63-22aee5a09efc',
-               'role': 'premiumUser',
-               'action_type': 'delete'} # delete/add
-response = requests.get('http://127.0.0.1/auth/change-role', cookies=response1.cookies, json=data_change)
+# data_change = {'id': '10dd44fb-ff6d-4b20-80be-b72ecebc3603',
+#                'role': 'premiumUser',
+#                'action_type': 'add'} # delete/add
+# response = requests.get('http://127.0.0.1/auth/change-role', cookies=response1.cookies, json=data_change)
+
+data_history = {'id': '10dd44fb-ff6d-4b20-80be-b72ecebc3603'}
+response = requests.get('http://127.0.0.1/auth/sign-in-history', cookies=response1.cookies, json=data_history)
 
 
 print(response.text)

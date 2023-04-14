@@ -43,8 +43,7 @@ async def sign_in():
     """A cute furry animal endpoint.
     """
     try:
-        data = request.get_json()
-        user = login_user(data)
+        user = login_user(request)
         response = jsonify({"msg": "login successful"})
 
         jwt_helper.user_id = user.id
@@ -124,11 +123,16 @@ async def get_user_description():
         return jsonify({"msg": 'some error'}), 401
 
 
+from routes.sign_in_history import get_history
 @from_file("core/swagger/sign_in_history.yml")
 @blueprint.route('/sign-in-history', methods=["GET"])
 @jwt_required(locations=["cookies"])
 async def sign_in_history():
-    return jsonify({"msg": 'Hello, World! sign-in-history'})
+    try:
+        data = get_history(request)
+        return jsonify(data)
+    except Exception as e:
+        return jsonify({"msg": e}), 401
 
 
 @blueprint.route('/swagger.json')
