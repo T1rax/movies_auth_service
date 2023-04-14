@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
 import json
+import click
 from flask_jwt_extended import jwt_required, get_jwt
 
 from core.errors import RegistrationException, UserIdException
@@ -8,6 +9,15 @@ from apispec_fromfile import from_file
 
 blueprint = Blueprint('auth', __name__, url_prefix='/auth')
 
+
+from routes.superuser import create_superuser
+@blueprint.cli.command('createsuperuser')
+@click.argument('name')
+@click.argument('password')
+def create_su(name, password):
+    data = create_superuser(name, password)
+    print(data)
+    return True
 
  # Test pages
 @blueprint.route('/', methods=["GET", "POST"])
@@ -43,8 +53,7 @@ async def sign_in():
     """A cute furry animal endpoint.
     """
     try:
-        data = request.get_json()
-        user = login_user(data)
+        user = login_user(request)
         response = jsonify({"msg": "login successful"})
 
         jwt_helper.user_id = user.id
@@ -124,11 +133,16 @@ async def get_user_description():
         return jsonify({"msg": 'some error'}), 401
 
 
+from routes.sign_in_history import get_history
 @from_file("core/swagger/sign_in_history.yml")
 @blueprint.route('/sign-in-history', methods=["GET"])
 @jwt_required(locations=["cookies"])
 async def sign_in_history():
-    return jsonify({"msg": 'Hello, World! sign-in-history'})
+    try:
+        data = get_history(request)
+        return jsonify(data)
+    except Exception as e:
+        return jsonify({"msg": e}), 401
 
 
 @blueprint.route('/swagger.json')

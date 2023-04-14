@@ -6,3 +6,6 @@ class LoginException(Exception):
 
 class UserIdException(Exception):
     pass
+
+class HistoryException(Exception):
+    pass
