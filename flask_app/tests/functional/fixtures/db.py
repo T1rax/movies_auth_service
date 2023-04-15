@@ -17,7 +17,7 @@ async def db_client():
             db.session.query(model).delete()
         db.session.commit()
 
-    models = [User, UserHistory]
+    models = [UserHistory, User]
 
     with app.app_context():
         _truncate_tables(models)
@@ -29,30 +29,6 @@ async def db_client():
     with app.app_context():
         db.session.remove()
 
-# @pytest_asyncio.fixture(scope='session')
-# async def clear_db():
-
-#     models = [User, UserHistory]
-
-#     def truncate_tables(models):
-#         for model in models:
-#             model.query.delete()
-
-#     truncate_tables(models)
-
 @pytest.fixture
 def db_helper(db_client):
     return DbHelper(db_client, User, app, test_settings)
-
-
-
-
-# @pytest_asyncio.fixture(scope='session')
-# async def aiohttp_session():
-#     session = aiohttp.ClientSession()
-#     yield session
-#     await session.close()
-
-# @pytest.fixture
-# def aiohttp_helper(aiohttp_session, test_config):
-#     return Aiohttp_helper(aiohttp_session, test_config)

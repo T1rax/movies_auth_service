@@ -5,9 +5,8 @@ from database.models import User
 
 
 def user_description(body_json):
-    user_jwt = get_jwt()['userid']
-    user = User.query.filter_by(id=user_jwt).first()
-    if 'admin' in user.roles or 'superUser' in user.roles:
+    jwt_roles = get_jwt()['roles']
+    if 'admin' in jwt_roles or 'superUser' in jwt_roles:
         user_id = body_json.get('id')
     else:
         user_id = get_jwt()['userid']

@@ -16,6 +16,7 @@ def set_jwt_configuration(app):
     # If true this will only allow the cookies that contain your JWTs to be sent
     # over https. In production, this should always be set to True
     app.config["JWT_COOKIE_SECURE"] = False 
+    app.config["JWT_COOKIE_CSRF_PROTECT"] = False 
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
     app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=30)
     app.config["JWT_IDENTITY_CLAIM"] = "userid"

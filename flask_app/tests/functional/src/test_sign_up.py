@@ -24,9 +24,7 @@ async def test_registration(test_config, payload, expected_answer, db_client, md
 
     cookies_dict = response.cookies
 
-    # 4. Проверяем ответ 
+    #Проверяем ответ 
     assert response.status == expected_answer['status']
-    assert cookies_dict.get('access_token_cookie') is not None
-    assert cookies_dict.get('csrf_access_token') is not None
-    assert cookies_dict.get('refresh_token_cookie') is not None
-    assert cookies_dict.get('csrf_refresh_token') is not None
+    assert cookies_dict.get('access_token_cookie').value is not None
+    assert cookies_dict.get('refresh_token_cookie').value is not None

@@ -1,5 +1,3 @@
-import backoff
-
 class NoResultsEsception(Exception):
     "Raised when service return empty results"
     pass
