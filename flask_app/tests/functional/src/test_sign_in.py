@@ -9,18 +9,16 @@ from settings import test_settings
     [
         (
                 test_settings,
-                {'login': 'test_login1',
-                'password': 'test_password',
-                'first_name': 'Nikola',
-                'last_name': 'Lenivetc'},
+                {'login': 'preloaded_1',
+                'password': 'test_password'},
                 {'status': HTTPStatus.OK}
         ),
     ]
 )
 @pytest.mark.asyncio
-async def test_registration(test_config, payload, expected_answer, db_client, mds_client, aiohttp_session):
+async def test_login(test_config, payload, expected_answer, db_client, mds_client, aiohttp_session):
 
-    response = await aiohttp_session.post(test_config.service_url+'/auth/sign-up', json=payload)
+    response = await aiohttp_session.post(test_config.service_url+'/auth/sign-in', json=payload)
 
     cookies_dict = response.cookies
 

@@ -8,7 +8,7 @@ sys.path.insert(0, '/home/seo/proj/sprint_5/movies_auth_service/tests/functional
 
 pytest_plugins = (
     'fixtures.asyncio',
-    'fixtures.flask',
+    'fixtures.db',
     'fixtures.mds',
     'fixtures.aiohttp'
     )

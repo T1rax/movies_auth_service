@@ -5,9 +5,9 @@ from app import app
 from database.db import db
 from database.models import User, UserHistory
 
+from testdata.create_users import load_test_data
 from utils.helpers import DbHelper
 from settings import test_settings
-
 
 @pytest_asyncio.fixture(scope='session')
 async def db_client():
@@ -21,6 +21,8 @@ async def db_client():
 
     with app.app_context():
         _truncate_tables(models)
+
+    load_test_data()    
 
     yield db
 
