@@ -1,8 +1,15 @@
 # movies_auth_service
 Service for Online cinema users authorisation
 
+## Start app
+- Navigate to root project folder
+- docker-compose up --build
 
-# Create superuser example
-docker-compose exec flaskapp bash
+## Run tests
+- Navigate to root tests/functional
+- docker-compose up --build
 
-flask auth createsuperuser admin 123qwe
+## Create superuser example
+- Start app
+- Connect to app bash via - docker-compose exec flaskapp bash
+- flask auth createsuperuser admin 123qwe

@@ -5,12 +5,6 @@ from database.models import User
 
 
 def register_user(body_json):
-
-    print(body_json)
-
-    # with app.app_context():
-    #     db.create_all()
-
     user = User(login=body_json.get('login'),
                 first_name=body_json.get('first_name'),
                 last_name=body_json.get('last_name'), 
@@ -25,5 +19,3 @@ def register_user(body_json):
         raise RegistrationException('User already exists')
 
     return user
-
-    # raise RegistrationException('User already exists')

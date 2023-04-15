@@ -16,13 +16,12 @@ from routes.superuser import create_superuser
 @click.argument('password')
 def create_su(name, password):
     data = create_superuser(name, password)
-    print(data)
     return True
 
  # Test pages
-@blueprint.route('/', methods=["GET", "POST"])
-async def main_page():
-    return 'Hello, World!'   
+# @blueprint.route('/', methods=["GET"])
+# async def main_page():
+#     return 'Hello, World!'   
 
 
 # Account authorization routes
@@ -31,7 +30,7 @@ from routes.sign_up import register_user
 from routes.sign_in import login_user
 
 @from_file("core/swagger/authorize.yml")
-@blueprint.route('/authorize', methods=["GET", "POST"])
+@blueprint.route('/authorize', methods=["POST"])
 @jwt_required(locations=["cookies"])
 async def authorize():
     response = authorize_user(get_jwt())
@@ -48,10 +47,8 @@ async def logout():
 
 
 @from_file("core/swagger/sign_in.yml")
-@blueprint.route('/sign-in', methods=["GET", "POST"])
+@blueprint.route('/sign-in', methods=["POST"])
 async def sign_in():
-    """A cute furry animal endpoint.
-    """
     try:
         user = login_user(request)
         response = jsonify({"msg": "login successful"})
@@ -65,10 +62,8 @@ async def sign_in():
 
 
 @from_file("core/swagger/sign_up.yml")
-@blueprint.route('/sign-up', methods=["GET", "POST"])
+@blueprint.route('/sign-up', methods=["POST"])
 async def sign_up():
-    """Registers user and returns JWT access and refresh tokens
-    """
     try:
         data = request.get_json()
         user = register_user(data)
@@ -85,8 +80,8 @@ async def sign_up():
 
 # Token-related routes
 @from_file("core/swagger/refresh.yml")
-@blueprint.route('/refresh', methods=["GET", "POST"])
-@jwt_required(refresh=True, locations=["json"])
+@blueprint.route('/refresh', methods=["POST"])
+@jwt_required(refresh=True, locations=["cookies"])
 async def refresh():
     response = jsonify({"msg": "tokens refreshed"})
     jwt_helper.create_tokens()
@@ -98,7 +93,7 @@ async def refresh():
 from routes.change_role import user_change_role
 
 @from_file("core/swagger/change_role.yml")
-@blueprint.route('/change-role', methods=["GET", "POST"])
+@blueprint.route('/change-role', methods=["POST"])
 @jwt_required(locations=["cookies"])
 async def change_role():
     try:
@@ -110,7 +105,6 @@ async def change_role():
     except UserIdException as e:
         return jsonify({"msg": str(e)}), 401
     except Exception as e:
-        print(e)
         return jsonify({"msg": 'some error'}), 401
 
 
@@ -124,7 +118,7 @@ async def get_user_description():
     try:
         data = request.get_json()
         user = user_description(data)
-        response = jsonify({"msg": user})
+        response = jsonify({"msg": 'User exists', 'user': user})
 
         return response, 200
     except UserIdException as e:
