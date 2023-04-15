@@ -2,7 +2,7 @@ import pytest
 import pytest_asyncio
 from redis.asyncio import Redis
 
-from utils.helpers import Mds_helper
+from utils.helpers import MdsHelper
 from settings import test_settings
 
 
@@ -15,4 +15,4 @@ async def mds_client():
 
 @pytest.fixture
 def mds_helper(mds_client):
-    return Mds_helper(mds_client, test_settings)
+    return MdsHelper(mds_client, test_settings)

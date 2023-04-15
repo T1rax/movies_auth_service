@@ -4,4 +4,4 @@ set -e
 
 # python3 utils/wait_for_services.py
 
-pytest src
+pytest -s src

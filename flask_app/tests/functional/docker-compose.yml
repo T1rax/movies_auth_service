@@ -5,7 +5,7 @@ services:
     image: postgres:alpine
     restart: always
     volumes:
-      - postgres_auth_test_data:/var/lib/postgresql/auth_test_data
+      - postgres_auth_test_data:/opt/postgresql/auth_test_data
     environment:
       POSTGRES_DB: ${AUTH_DB__NAME}
       POSTGRES_USER: ${AUTH_DB__USER}
@@ -19,19 +19,24 @@ services:
     volumes:
       - redis_auth_test_data:/opt/redis/test_auth_data
 
-  # flaskapp:
-  #   build: ../../flask_app
-  #   restart: always
-  #   env_file:
-  #     - ../../.env
-  #   depends_on:
-  #     - postgres
-  #     - redis
+  flaskapp:
+    build: ../../.
+    image: flaskapp-image
+    restart: always
+    env_file:
+      - ../../../.env
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - 5000:5000
 
   tests:
-    build: ./
+    image: flaskapp-image
+    entrypoint: >
+      sh -c "pytest tests/functional/src"
     env_file:
-      - ../../.env
+      - ../../../.env
     depends_on:
       - postgres
       - redis

@@ -5,6 +5,10 @@ WORKDIR /opt/app
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONPATH "${PYTHONPATH}:/opt/app"
+ENV PYTHONPATH "${PYTHONPATH}:/opt/app/flask_app"
+ENV PYTHONPATH "${PYTHONPATH}:/opt/app/tests/functional"
+ENV PYTHONPATH "${PYTHONPATH}:/opt/appflask_app/tests/functional"
+
 
 COPY requirements.txt requirements.txt
 
