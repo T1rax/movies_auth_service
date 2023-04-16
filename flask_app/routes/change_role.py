@@ -1,4 +1,5 @@
 from flask_jwt_extended import get_jwt
+from flask import current_app
 
 from core.errors import UserIdException
 from database.db import db
@@ -7,8 +8,13 @@ from core.config import configs
 
 
 def user_change_role(body_json):
+    current_app.logger.info('Reading JWT')
     user_jwt = get_jwt()['userid']
+
+    current_app.logger.info('Searching for user in DB')
     user = User.query.filter_by(id=user_jwt).first()
+
+    current_app.logger.info('Assessing roles')
     if 'admin' in user.roles or 'superUser' in user.roles:
         user_id = body_json.get('id')
     else:
@@ -17,8 +23,10 @@ def user_change_role(body_json):
     user = User.query.filter_by(id=user_id).first()
 
     if not user:
+        current_app.logger.error('Invalid ID')
         raise UserIdException('invalid ID')
     else:
+        current_app.logger.info('Updating roles')
         roles = list(user.roles)
         target_role = body_json.get('role')
         action = body_json.get('action_type')
@@ -40,4 +48,5 @@ def user_change_role(body_json):
 
         user.roles = roles
         db.session.commit()
+        current_app.logger.info('Roles updated')
         return {"msg":'User roles updated', "user":user.login, "roles":user.roles}
