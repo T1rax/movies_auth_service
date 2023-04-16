@@ -7,16 +7,30 @@ from core.errors import RegistrationException, UserIdException
 from encryption.jwt import jwt_helper
 from apispec_fromfile import from_file
 
+#Routes import
+from routes.superuser import create_superuser
+# Account authorization routes
+from routes.authorize import authorize_user
+from routes.sign_up import register_user
+from routes.sign_in import login_user
+# Roles routes
+from routes.change_role import user_change_role
+# Support routes
+from routes.get_user_description import user_description
+from routes.sign_in_history import get_history
+
+
 blueprint = Blueprint('auth', __name__, url_prefix='/auth')
 
 
-from routes.superuser import create_superuser
+#Bash routes
 @blueprint.cli.command('createsuperuser')
 @click.argument('name')
 @click.argument('password')
 def create_su(name, password):
     data = create_superuser(name, password)
     return True
+
 
  # Test pages
 # @blueprint.route('/', methods=["GET"])
@@ -25,10 +39,6 @@ def create_su(name, password):
 
 
 # Account authorization routes
-from routes.authorize import authorize_user
-from routes.sign_up import register_user
-from routes.sign_in import login_user
-
 @from_file("core/swagger/authorize.yml")
 @blueprint.route('/authorize', methods=["POST"])
 @jwt_required(locations=["cookies"])
@@ -77,7 +87,6 @@ async def sign_up():
         return jsonify({"msg": str(e)}), 401
 
 
-
 # Token-related routes
 @from_file("core/swagger/refresh.yml")
 @blueprint.route('/refresh', methods=["POST"])
@@ -90,8 +99,6 @@ async def refresh():
 
 
 # Roles routes
-from routes.change_role import user_change_role
-
 @from_file("core/swagger/change_role.yml")
 @blueprint.route('/change-role', methods=["POST"])
 @jwt_required(locations=["cookies"])
@@ -109,8 +116,6 @@ async def change_role():
 
 
 # Support routes
-from routes.get_user_description import user_description
-
 @from_file("core/swagger/get_user_description.yml")
 @blueprint.route('/get-user-description', methods=["GET"])
 @jwt_required(locations=["cookies"])
@@ -127,7 +132,6 @@ async def get_user_description():
         return jsonify({"msg": 'some error'}), 401
 
 
-from routes.sign_in_history import get_history
 @from_file("core/swagger/sign_in_history.yml")
 @blueprint.route('/sign-in-history', methods=["GET"])
 @jwt_required(locations=["cookies"])
@@ -139,6 +143,7 @@ async def sign_in_history():
         return jsonify({"msg": e}), 401
 
 
+# Documentation
 @blueprint.route('/swagger.json')
 async def swagger():
     with open('core/swagger/swagger.json', 'r') as f:
