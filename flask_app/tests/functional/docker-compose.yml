@@ -28,8 +28,6 @@ services:
     depends_on:
       - postgres
       - redis
-    ports:
-      - 5000:5000
 
   tests:
     image: flaskapp-image

@@ -1,4 +1,5 @@
 from flask_jwt_extended import get_jwt
+from flask import current_app
 
 from core.errors import HistoryException
 from database.db import db
@@ -6,7 +7,10 @@ from database.models import User, UserHistory
 
 
 def get_history(request):
+    current_app.logger.info('Reading JWT')
     user_jwt = get_jwt()['userid']
+
+    current_app.logger.info('Verifying user in DB')
     user = User.query.filter_by(id=user_jwt).first()
     if 'admin' in user.roles or 'superUser' in user.roles:
         body_json = request.get_json()
@@ -14,6 +18,7 @@ def get_history(request):
     else:
         user_id = get_jwt()['userid']
 
+    current_app.logger.info('Analyzing pagination parameters')
     if body_json.get('page') is not None:
         page = body_json.get('page')
     else:
@@ -24,10 +29,12 @@ def get_history(request):
     else:
         per_page = 3
 
+    current_app.logger.info('Looking for user in DB')
     history = UserHistory.query.filter_by(user_id=user_id).paginate(page=page,
                                                                     per_page=per_page)
 
     if not history:
+        current_app.logger.error('No history')
         raise HistoryException('No history')
     else:
         res = []
