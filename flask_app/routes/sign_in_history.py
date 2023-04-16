@@ -18,8 +18,19 @@ def get_history(request):
     else:
         user_id = get_jwt()['userid']
 
+    if body_json.get('page') is not None:
+        page = body_json.get('page')
+    else:
+        page = 1
+
+    if body_json.get('per_page') is not None:
+        per_page = body_json.get('per_page')
+    else:
+        per_page = 3
+
     current_app.logger.info('Looking for user in DB')
-    history = UserHistory.query.filter_by(user_id=user_id)
+    history = UserHistory.query.filter_by(user_id=user_id).paginate(page=page,
+                                                                    per_page=per_page)
 
     if not history:
         current_app.logger.error('No history')
