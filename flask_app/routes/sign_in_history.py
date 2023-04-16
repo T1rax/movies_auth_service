@@ -18,6 +18,7 @@ def get_history(request):
     else:
         user_id = get_jwt()['userid']
 
+    current_app.logger.info('Analyzing pagination parameters')
     if body_json.get('page') is not None:
         page = body_json.get('page')
     else:
