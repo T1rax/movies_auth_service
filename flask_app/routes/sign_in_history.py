@@ -41,6 +41,7 @@ def get_history(request):
         for user in history:
              res.append({
                 'user_id': user.user_id,
+                'user_device_type': user.user_device_type,
                 'useragent': user.useragent,
                 'remote_addr': user.remote_addr,
                 'referrer': user.referrer,
@@ -56,6 +57,7 @@ def add_history(request, user_id, action):
                                remote_addr=str(request.remote_addr),
                                referrer=str(request.referrer),
                                action=str(action))
+    user_history.set_device_type()
 
     try:
         db.session.add(user_history)

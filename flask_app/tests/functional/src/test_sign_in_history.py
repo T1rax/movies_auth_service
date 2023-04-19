@@ -41,3 +41,4 @@ async def test_sign_in_history(test_config, admin_payload, login_payload, expect
     assert len(body) >= expected_answer['length']
     assert body[0].get('user_id') == request_payload['id']
     assert body[0].get('useragent') is not None
+    assert body[0].get('user_device_type') is not None
