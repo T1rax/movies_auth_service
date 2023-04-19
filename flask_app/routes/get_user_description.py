@@ -27,4 +27,5 @@ def user_description(body_json):
             'first_name': user.first_name,
             'login': user.login,
             'roles': user.roles,
+            'age_group': user.age_group,
         }

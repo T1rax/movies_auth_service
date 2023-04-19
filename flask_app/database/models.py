@@ -27,9 +27,40 @@ def create_hisotory_partitions(target, connection, **kw) -> None:
     )
 
 
+def create_user_partitions(target, connection, **kw) -> None:
+    """ creating partition by user """
+    connection.execute(
+        """CREATE TABLE IF NOT EXISTS "users_age_undefined" PARTITION OF "users" FOR VALUES IN ('undefined')"""
+    )
+    connection.execute(
+        """CREATE TABLE IF NOT EXISTS "users_age_0_17" PARTITION OF "users" FOR VALUES IN ('0-17')"""
+    )
+    connection.execute(
+        """CREATE TABLE IF NOT EXISTS "users_age_18_24" PARTITION OF "users" FOR VALUES IN ('18-24')"""
+    )
+    connection.execute(
+        """CREATE TABLE IF NOT EXISTS "users_age_25_34" PARTITION OF "users" FOR VALUES IN ('25-34')"""
+    )
+    connection.execute(
+        """CREATE TABLE IF NOT EXISTS "users_age_35_44" PARTITION OF "users" FOR VALUES IN ('35-44')"""
+    )
+    connection.execute(
+        """CREATE TABLE IF NOT EXISTS "users_age_45_64" PARTITION OF "users" FOR VALUES IN ('45-64')"""
+    )
+    connection.execute(
+        """CREATE TABLE IF NOT EXISTS "users_age_65_inf" PARTITION OF "users" FOR VALUES IN ('65+')"""
+    )
+
+
 class User(db.Model):
     """ Model for User """
     __tablename__ = 'users'
+    __table_args__ = (
+        {
+            'postgresql_partition_by': 'LIST (age_group)',
+            'listeners': [('after_create', create_user_partitions)],
+        }
+    )
 
     id = db.Column(UUID(as_uuid=True),
                    primary_key=True,
@@ -40,6 +71,8 @@ class User(db.Model):
     password = db.Column(db.String, nullable=False)
     first_name = db.Column(db.String(100), nullable=True)
     last_name = db.Column(db.String(100), nullable=True)
+    age_group = db.Column(db.Enum('undefined', '0-17', '18-24', '25-34', '35-44', '45-64', '65+', name='age_groups'), 
+                          nullable=False, default='undefined')
     roles = db.Column(db.PickleType(), nullable=False)
 
     def __repr__(self):
