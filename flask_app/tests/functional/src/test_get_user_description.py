@@ -41,3 +41,4 @@ async def test_get_user_description_by_id(test_config, admin_payload, login_payl
     assert user.get('id') == request_payload['id']
     assert user.get('first_name') is not None
     assert user.get('roles') is not None
+    assert user.get('age_group') is not None

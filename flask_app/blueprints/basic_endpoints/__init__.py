@@ -18,7 +18,7 @@ from routes.sign_in import login_user
 from routes.change_role import user_change_role
 # Support routes
 from routes.get_user_description import user_description
-from routes.sign_in_history import get_history
+from routes.sign_in_history import get_history, add_history
 
 
 blueprint = Blueprint('auth', __name__, url_prefix='/auth')
@@ -58,8 +58,13 @@ async def authorize():
 async def logout():
     try:
         response = jsonify({"msg": "logout successful"})
+
+        current_app.logger.info('Adding logout to user history')
+        add_history(request, get_jwt().get('userid'), 'logout')
+
         current_app.logger.info('Dropping JWT from cookies')
         jwt_helper.drop_tokens(response)
+
         return response, 200
     except Exception:
         return jsonify({"msg": 'Internal server error'}), 500
@@ -87,8 +92,7 @@ async def sign_in():
 @blueprint.route('/sign-up', methods=["POST"])
 async def sign_up():
     try:
-        data = request.get_json()
-        user = register_user(data)
+        user = register_user(request)
         response = jsonify({"msg": "registration successful"})
 
         current_app.logger.info('Adding JWT to cookies')
