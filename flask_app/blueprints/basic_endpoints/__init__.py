@@ -1,8 +1,7 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, render_template, current_app
 import json
 import click
 from flask_jwt_extended import jwt_required, get_jwt
-from flask import current_app
 
 from core.errors import RegistrationException, UserIdException, LoginException, HistoryException
 from encryption.jwt import jwt_helper
@@ -34,10 +33,10 @@ def create_su(name, password):
     return True
 
 
- # Test pages
-# @blueprint.route('/', methods=["GET"])
-# async def main_page():
-#     return 'Hello, World!'   
+# Test pages
+@blueprint.route('/', methods=["GET"])
+async def main_page():
+    return render_template('home.html')  
 
 
 # Account authorization routes

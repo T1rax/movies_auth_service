@@ -5,8 +5,10 @@ from core.errors import UserIdException
 from database.db import db
 from database.models import User
 from core.config import configs
+from performance.tracing.tracer import trace_it
 
 
+@trace_it
 def user_change_role(body_json):
     current_app.logger.info('Reading JWT')
     user_jwt = get_jwt()['userid']

@@ -3,8 +3,10 @@ from flask import current_app
 
 from core.errors import UserIdException
 from database.models import User
+from performance.tracing.tracer import trace_it
 
 
+@trace_it
 def user_description(body_json):
     current_app.logger.info('Reading JWT')
     jwt_roles = get_jwt()['roles']

@@ -4,8 +4,10 @@ from flask import current_app
 from core.errors import HistoryException
 from database.db import db
 from database.models import User, UserHistory
+from performance.tracing.tracer import trace_it
 
 
+@trace_it
 def get_history(request):
     current_app.logger.info('Reading JWT')
     user_jwt = get_jwt()['userid']
@@ -51,6 +53,7 @@ def get_history(request):
         return res
 
 
+@trace_it
 def add_history(request, user_id, action):
     user_history = UserHistory(user_id=str(user_id),
                                useragent=str(request.user_agent),
