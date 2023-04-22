@@ -20,6 +20,10 @@ def read_x_request_id_header(app) -> None:
             current_app.logger.info('No request ID')
             raise RuntimeError('request id is required') 
         
+        span = tracer.start_span('set_request_id')
+        span.set_attribute('http.request_id', request_id)
+        span.end() 
+        
 
 def configure_tracer(app) -> None:
     read_x_request_id_header(app)

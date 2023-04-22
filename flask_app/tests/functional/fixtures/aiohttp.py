@@ -1,6 +1,7 @@
 import pytest
 import pytest_asyncio
 import aiohttp
+import uuid
 
 from utils.helpers import AiohttpHelper
 
@@ -12,5 +13,5 @@ async def aiohttp_session():
     await session.close()
 
 @pytest.fixture
-def aiohttp_helper(aiohttp_session, test_config):
-    return AiohttpHelper(aiohttp_session, test_config)
+def default_headers():
+    return {'x-request-id': str(uuid.uuid4())}

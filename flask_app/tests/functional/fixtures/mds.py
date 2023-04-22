@@ -12,7 +12,3 @@ async def mds_client():
     await client.flushall()
     yield client
     await client.close()
-
-@pytest.fixture
-def mds_helper(mds_client):
-    return MdsHelper(mds_client, test_settings)

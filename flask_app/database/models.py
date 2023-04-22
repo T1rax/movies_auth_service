@@ -9,6 +9,7 @@ from device_detector import DeviceDetector
 from datetime import datetime
 
 from database.db import db
+from performance.tracing.tracer import trace_it
 
 
 def create_hisotory_partitions(target, connection, **kw) -> None:
@@ -118,6 +119,7 @@ class UserHistory(db.Model):
     def __repr__(self):
         return f'<UserHistory {self.user_id}>'
     
+    @trace_it
     def set_device_type(self):
         device = DeviceDetector(self.useragent, skip_bot_detection=True).parse()
         device_type = device.device_type()
