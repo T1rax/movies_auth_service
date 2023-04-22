@@ -5,6 +5,9 @@ class MainConfig(BaseSettings):
     """ Project settings """
     log_level: str = Field('INFO')
     existing_roles: list = Field(['basicRole', 'premiumUser', 'admin', 'superUser'])
+    rpm: int = Field(20)
+    pending_anonymous_id: str = Field(None)
+    testing: bool = Field(False)
 
 
 class MemoryDataStorageConfig(BaseSettings):
