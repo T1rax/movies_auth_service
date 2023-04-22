@@ -1,0 +1,10 @@
+---
+get:
+  summary: Loads app home page
+  description: >
+    Returns main page of the auth app
+  tags:
+    - Additional
+  responses:
+    200:
+      description: Ok
