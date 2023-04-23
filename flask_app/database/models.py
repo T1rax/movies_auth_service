@@ -1,11 +1,12 @@
 import uuid
 import enum
 
-from sqlalchemy import Enum, UniqueConstraint
+from sqlalchemy import Enum, UniqueConstraint, or_
 from sqlalchemy.dialects.postgresql import UUID
 from werkzeug.security import generate_password_hash, check_password_hash
 from device_detector import DeviceDetector
-
+import string
+from secrets import choice as secrets_choice
 from datetime import datetime
 
 from database.db import db
@@ -68,15 +69,26 @@ class User(db.Model):
                    unique=True,
                    nullable=False)
     login = db.Column(db.String(100), unique=True, nullable=False)
+    # email = db.Column(db.String, unique=True, nullable=True)
     password = db.Column(db.String, nullable=False)
     first_name = db.Column(db.String(100), nullable=True)
     last_name = db.Column(db.String(100), nullable=True)
-    age_group = db.Column(db.Enum('undefined', '0-17', '18-24', '25-34', '35-44', '45-64', '65+', name='age_groups'), 
+    age_group = db.Column(db.Enum('undefined', '0-17', '18-24', '25-34', '35-44', '45-64', '65+', name='age_groups'),
                           nullable=False, default='undefined')
     roles = db.Column(db.PickleType(), nullable=False)
+    # social_accounts = db.relationship('social_accounts', backref='user')
 
     def __repr__(self):
         return f'<User {self.login}>'
+
+    @classmethod
+    def get_user_by_universal_login(cls, login, email):
+        return cls.query.filter(or_(cls.login == login, cls.email == email)).first()
+
+    @staticmethod
+    def generate_random_string():
+        alphabet = string.ascii_letters + string.digits
+        return ''.join(secrets_choice(alphabet) for _ in range(16))
 
     def set_password(self, password):
         self.password = generate_password_hash(password)
@@ -117,7 +129,7 @@ class UserHistory(db.Model):
 
     def __repr__(self):
         return f'<UserHistory {self.user_id}>'
-    
+
     def set_device_type(self):
         device = DeviceDetector(self.useragent, skip_bot_detection=True).parse()
         device_type = device.device_type()
@@ -126,3 +138,26 @@ class UserHistory(db.Model):
             self.user_device_type = device_type
         else:
             self.user_device_type = 'other'
+
+
+class SocialAccount(db.Model):
+    """ Model for recording user's social accounts """
+    __tablename__ = 'social_accounts'
+    __table_args__ = (UniqueConstraint('social_id', 'provider'),)
+
+    id = db.Column(UUID(as_uuid=True),
+                   primary_key=True,
+                   default=uuid.uuid4,
+                   unique=True,
+                   nullable=False)
+    social_id = db.Column(db.Text, nullable=False)
+    provider = db.Column(db.Text, nullable=False)
+    user = db.relationship(User, backref=db.backref('social_accounts'))
+    user_id = db.Column(UUID(as_uuid=True), db.ForeignKey('user.id'), nullable=False)
+
+    def __repr__(self):
+        return f'<SocialAccount {self.provider}:{self.user_id}>'
+
+    @staticmethod
+    def get_user_social(provider, social_id):
+        return SocialAccount.query.filter_by(provider=provider, social_id=social_id).one_or_none()
