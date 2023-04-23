@@ -153,7 +153,7 @@ class SocialAccount(db.Model):
     social_id = db.Column(db.Text, nullable=False)
     provider = db.Column(db.Text, nullable=False)
     user = db.relationship(User, backref=db.backref('social_accounts'))
-    user_id = db.Column(UUID(as_uuid=True), db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(UUID(as_uuid=True), db.ForeignKey('users.id'), nullable=False)
 
     def __repr__(self):
         return f'<SocialAccount {self.provider}:{self.user_id}>'

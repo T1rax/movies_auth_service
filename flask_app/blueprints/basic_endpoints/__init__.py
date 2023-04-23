@@ -44,12 +44,14 @@ async def oauth_callback(provider):
         social_account = check_user_social(provider, user_data['sub'])
 
         if not social_account:
+            current_app.logger.info("Create new account")
             user = get_or_create_social_account(provider,
                                                 social_id=user_data['sub'],
                                                 first_name=user_data['given_name'],
                                                 last_name=user_data['family_name'],
                                                 email=user_data['email'])
         else:
+            current_app.logger.info("Account already exists")
             user = social_account.user
 
         response = jsonify({"msg": user.login})
