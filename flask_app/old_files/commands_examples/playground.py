@@ -9,9 +9,9 @@ import requests
 #
 # response = requests.post('http://127.0.0.1/auth/sign-up', json=data)
 #
-data_login = {'login': 'test_login1',
-              'password': 'test_password'}
-response1 = requests.post('http://127.0.0.1/auth/sign-in', json=data_login)
+# data_login = {'login': 'test_login1',
+#               'password': 'test_password'}
+# response1 = requests.post('http://127.0.0.1/auth/sign-in', json=data_login)
 # #
 # data_desc = {'id': '10dd44fb-ff6d-4b20-80be-b72ecebc3603'}
 # response = requests.get('http://127.0.0.1/auth/get-user-description', cookies=response1.cookies, json=data_desc)
@@ -20,12 +20,12 @@ response1 = requests.post('http://127.0.0.1/auth/sign-in', json=data_login)
 #                'role': 'superUser'}
 # response = requests.get('http://127.0.0.1/auth/change-role', cookies=response1.cookies, json=data_change)
 
-data_history = {'id': '10dd44fb-ff6d-4b20-80be-b72ecebc3603',
-                'page': 1,
-                'per_page': 10}
-response = requests.get('http://127.0.0.1/auth/sign-in-history', cookies=response1.cookies, json=data_history)
+# data_history = {'id': '10dd44fb-ff6d-4b20-80be-b72ecebc3603',
+#                 'page': 1,
+#                 'per_page': 10}
+# response = requests.get('http://127.0.0.1/auth/sign-in-history', cookies=response1.cookies, json=data_history)
 
-print(response.text)
+# print(response.text)
 # print('-----------------------------')
 # print(response.cookies)
 
@@ -34,17 +34,17 @@ print(response.text)
 
 # Вова
 
-# data = {'login': 'test_login2',
-#         'password': 'test_password',
-#         'first_name': 'Nikola',
-#         'last_name': 'Lenivetc'}
-#
+data = {'login': 'test_login3',
+        'password': 'test_password',
+        'first_name': 'Nikola',
+        'last_name': 'Lenivetc'}
+
 # response = requests.post('http://127.0.0.1/auth/sign-up', json=data)
 
 
-# data_login = {'login': 'test_login2',
-#               'password': 'test_password'}
-# response1 = requests.get('http://127.0.0.1/auth/sign-in', json=data_login)
+data_login = {'login': 'test_login3',
+              'password': 'test_password'}
+response = requests.post('http://127.0.0.1/auth/sign-in', json=data_login)
 
 # data_desc = {'id': '10dd44fb-ff6d-4b20-80be-b72ecebc3603'}
 # response = requests.get('http://127.0.0.1/auth/get-user-description', cookies=response1.cookies, json=data_desc)
@@ -62,6 +62,6 @@ print(response.text)
 # response1 = requests.get('http://127.0.0.1/auth/sign-in', json=data_login)
 #
 #
-# print(response1.text)
-# print('-----------------------------')
-# print(response.cookies)
+print(response.text)
+print('-----------------------------')
+print(response.cookies)

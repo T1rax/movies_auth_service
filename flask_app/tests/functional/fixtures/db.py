@@ -28,7 +28,3 @@ async def db_client():
 
     with app.app_context():
         db.session.remove()
-
-@pytest.fixture
-def db_helper(db_client):
-    return DbHelper(db_client, User, app, test_settings)

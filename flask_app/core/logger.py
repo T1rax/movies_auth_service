@@ -7,7 +7,7 @@ LOG_DEFAULT_HANDLERS = ['console']
 
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': False,
+    'disable_existing_loggers': True,
     'formatters': {
         'verbose': {
             'format': LOG_FORMAT

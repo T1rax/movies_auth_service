@@ -17,14 +17,14 @@ from settings import test_settings
     ]
 )
 @pytest.mark.asyncio
-async def test_authorize(test_config, payload, expected_answer, db_client, mds_client, aiohttp_session):
+async def test_authorize(test_config, payload, expected_answer, default_headers, aiohttp_session, db_client, mds_client):
 
     #Логинимся для получения токенов
-    response_1 = await aiohttp_session.post(test_config.service_url+'/auth/sign-in', json=payload)
+    response_1 = await aiohttp_session.post(test_config.service_url+'/auth/sign-in', json=payload, headers=default_headers)
 
     cookies_dict_1 = response_1.cookies
 
-    response_2 = await aiohttp_session.post(test_config.service_url+'/auth/authorize', cookies=cookies_dict_1)
+    response_2 = await aiohttp_session.post(test_config.service_url+'/auth/authorize', cookies=cookies_dict_1, headers=default_headers)
 
     body = await response_2.json()
 

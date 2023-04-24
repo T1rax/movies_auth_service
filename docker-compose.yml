@@ -29,6 +29,12 @@ services:
     volumes:
       - redis_token_data:/opt/redis/token_data
 
+  jaeger:
+    image: 'jaegertracing/all-in-one:latest'
+    restart: always
+    environment:
+      QUERY_BASE_PATH: /jaeger-ui
+
   flaskapp:
     build: flask_app
     restart: on-failure
@@ -39,6 +45,7 @@ services:
     depends_on:
       - postgres
       - redis
+      - jaeger
 
 
 volumes:

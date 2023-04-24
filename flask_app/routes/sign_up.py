@@ -2,10 +2,12 @@ from core.errors import RegistrationException
 from sqlalchemy.exc import IntegrityError
 from database.db import db
 from database.models import User
+from performance.tracing.tracer import trace_it
 from routes.sign_in_history import add_history
 from flask import current_app
 
 
+@trace_it
 def register_user(request):
     body_json = request.get_json()
     current_app.logger.info('Creating user instance')

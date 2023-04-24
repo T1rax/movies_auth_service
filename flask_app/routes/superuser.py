@@ -3,8 +3,10 @@ from sqlalchemy.exc import IntegrityError
 from database.db import db
 from database.models import User
 from flask import current_app
+from performance.tracing.tracer import trace_it
 
 
+@trace_it
 def create_superuser(login, password):
     current_app.logger.info('Creating user instance')
 

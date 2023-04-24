@@ -3,15 +3,18 @@ from flask import current_app
 
 from core.errors import HistoryException
 from database.db import db
-from database.models import User, UserHistory
+from database.models import UserHistory
+from database.helpers import user_helper, history_helper
+from performance.tracing.tracer import trace_it
 
 
+@trace_it
 def get_history(request):
     current_app.logger.info('Reading JWT')
     user_jwt = get_jwt()['userid']
 
     current_app.logger.info('Verifying user in DB')
-    user = User.query.filter_by(id=user_jwt).first()
+    user = user_helper.get_user_by_id(id=user_jwt)
     if 'admin' in user.roles or 'superUser' in user.roles:
         body_json = request.get_json()
         user_id = body_json.get('id')
@@ -30,8 +33,7 @@ def get_history(request):
         per_page = 3
 
     current_app.logger.info('Looking for user in DB')
-    history = UserHistory.query.filter_by(user_id=user_id).paginate(page=page,
-                                                                    per_page=per_page)
+    history = history_helper.get_history_by_user_id(user_id, page, per_page)
 
     if not history:
         current_app.logger.error('No history')
@@ -51,6 +53,7 @@ def get_history(request):
         return res
 
 
+@trace_it
 def add_history(request, user_id, action):
     user_history = UserHistory(user_id=str(user_id),
                                useragent=str(request.user_agent),
