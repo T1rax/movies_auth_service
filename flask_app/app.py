@@ -1,7 +1,3 @@
-import sys
-sys.path.insert(0, '/home/tirax/movies_auth_service/flask_app')
-sys.path.insert(0, '/home/seo/proj/sprint_7/movies_auth_service/flask_app')
-
 from flask import Flask
 from flask_migrate import Migrate
 
