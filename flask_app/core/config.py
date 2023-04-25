@@ -28,10 +28,38 @@ class DataBaseConfig(BaseSettings):
     port: str = Field('5432')
 
 
+class GoogleOauth(BaseSettings):
+    """Google Oauth settings"""
+    client_id: str = Field('some_value_from_provider')
+    secret: str = Field('some_value_from_provider')
+
+
+class YandexOauth(BaseSettings):
+    """Google Oauth settings"""
+    client_id: str = Field('some_value_from_provider')
+    secret: str = Field('some_value_from_provider')
+
+
+class VkOauth(BaseSettings):
+    """Google Oauth settings"""
+    client_id: str = Field('some_value_from_provider')
+    secret: str = Field('some_value_from_provider')
+    service_key: str = Field('some_value_from_provider')
+
+
+class OauthApps(BaseSettings):
+    """ Project settings """
+    google: GoogleOauth = GoogleOauth()
+    yandex: YandexOauth = YandexOauth()
+    vk: VkOauth = VkOauth()
+    secret_key: str = Field('some_key')
+
+
 class BaseConfig(BaseSettings):
     mds: MemoryDataStorageConfig = MemoryDataStorageConfig()
     db: DataBaseConfig = DataBaseConfig()
     main: MainConfig = MainConfig()
+    oauth: OauthApps = OauthApps()
 
     class Config:
         env_prefix = 'AUTH_'

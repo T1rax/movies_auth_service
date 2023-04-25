@@ -5,6 +5,7 @@ from core.config import configs
 def set_flask_configuration(app):
 
     app.config['SQLALCHEMY_DATABASE_URI'] = configs.db.url
+    app.config['SECRET_KEY'] = configs.oauth.secret_key
 
     set_jwt_configuration(app)
     set_swagger_configuration(app)

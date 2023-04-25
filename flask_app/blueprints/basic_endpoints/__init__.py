@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request, render_template, current_app
+from flask import Blueprint, jsonify, request, render_template, current_app, url_for
 import json
 import click
 from flask_jwt_extended import jwt_required, get_jwt
@@ -7,6 +7,7 @@ from core.errors import RegistrationException, UserIdException, LoginException, 
 from encryption.jwt import jwt_helper
 from apispec_fromfile import from_file
 
+from core.oauth import oauth
 #Routes import
 from routes.superuser import create_superuser
 # Account authorization routes
@@ -18,9 +19,49 @@ from routes.change_role import user_change_role
 # Support routes
 from routes.get_user_description import user_description
 from routes.sign_in_history import get_history, add_history
+from routes.social import get_or_create_social_account, check_user_social
 
 
 blueprint = Blueprint('auth', __name__, url_prefix='/auth')
+
+
+# http://127.0.0.1/auth/google/login
+@blueprint.route('/<provider>/login', methods=["GET"])
+async def oauth_login(provider):
+    google = oauth.create_client(provider)
+    redirect_uri = url_for('auth.oauth_callback', provider=provider, _external=True)
+    return google.authorize_redirect(redirect_uri)
+
+
+@blueprint.route('/<provider>/callback', methods=["GET"])
+async def oauth_callback(provider):
+    try:
+        google = oauth.create_client(provider)
+        token = google.authorize_access_token()
+        user_data = oauth.google.userinfo()
+
+        social_account = check_user_social(provider, user_data['sub'])
+
+        if not social_account:
+            current_app.logger.info("Create new account")
+            user = get_or_create_social_account(provider,
+                                                social_id=user_data['sub'],
+                                                first_name=user_data['given_name'],
+                                                last_name=user_data['family_name'],
+                                                email=user_data['email'])
+        else:
+            current_app.logger.info("Account already exists")
+            user = social_account.user
+
+        response = jsonify({"msg": user.login})
+        current_app.logger.info('Adding JWT to cookies')
+        jwt_helper.user_id = user.id
+        jwt_helper.create_tokens()
+        jwt_helper.set_tokens(response)
+        return response, 200
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify({"msg": 'Internal server error'}), 500
 
 
 #Bash routes
