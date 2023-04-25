@@ -14,7 +14,9 @@ from blueprints.basic_endpoints.swagger import swaggerui_blueprint
 from core.flask_configuration import set_flask_configuration
 from core.logger import set_up_logging
 from encryption.jwt import create_jwt
-from core.swagger.openapi import register_docs, spec
+from performance.requests_limit.rpm import set_rpm_limit
+from performance.tracing.tracer import configure_tracer
+from core.swagger.openapi import register_docs
 
 
 set_up_logging()
@@ -30,9 +32,14 @@ set_flask_configuration(app)
 db.init_app(app)
 migrate = Migrate(app, db)
 
-# swagger = Swagger(app)
+# Encryption
 jwt = create_jwt(app)
 
+# Performance logging 
+set_rpm_limit(app)
+configure_tracer(app)
+
+# Documentation
 register_docs(app)
 
 # Registry OAuth

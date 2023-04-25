@@ -1,8 +1,7 @@
-from flask import Blueprint, jsonify, request, url_for
+from flask import Blueprint, jsonify, request, render_template, current_app, url_for
 import json
 import click
 from flask_jwt_extended import jwt_required, get_jwt
-from flask import current_app
 
 from core.errors import RegistrationException, UserIdException, LoginException, HistoryException
 from encryption.jwt import jwt_helper
@@ -75,9 +74,9 @@ def create_su(name, password):
 
 
 # Test pages
-# @blueprint.route('/', methods=["GET"])
-# async def main_page():
-#     return 'Hello, World!'
+@blueprint.route('/', methods=["GET"])
+async def main_page():
+    return render_template('home.html')  
 
 
 # Account authorization routes
@@ -88,7 +87,8 @@ async def authorize():
     try:
         response = authorize_user(get_jwt())
         return jsonify(response), 200
-    except Exception:
+    except Exception as e:
+        current_app.logger.error(e)
         return jsonify({"msg": 'Internal server error'}), 500
 
 
@@ -106,7 +106,8 @@ async def logout():
         jwt_helper.drop_tokens(response)
 
         return response, 200
-    except Exception:
+    except Exception as e:
+        current_app.logger.error(e)
         return jsonify({"msg": 'Internal server error'}), 500
 
 
@@ -123,8 +124,10 @@ async def sign_in():
         jwt_helper.set_tokens(response)
         return response, 200
     except LoginException as e:
+        current_app.logger.error(e)
         return jsonify({"msg": str(e)}), 401
     except Exception as e:
+        current_app.logger.error(e)
         return jsonify({"msg": 'Internal server error'}), 500
 
 
@@ -141,8 +144,10 @@ async def sign_up():
         jwt_helper.set_tokens(response)
         return response, 200
     except RegistrationException as e:
+        current_app.logger.error(e)
         return jsonify({"msg": str(e)}), 401
-    except Exception:
+    except Exception as e:
+        current_app.logger.error(e)
         return jsonify({"msg": 'Internal server error'}), 500
 
 
@@ -158,7 +163,8 @@ async def refresh():
         jwt_helper.create_tokens()
         jwt_helper.set_tokens(response)
         return response, 200
-    except Exception:
+    except Exception as e:
+        current_app.logger.error(e)
         return jsonify({"msg": 'Internal server error'}), 500
 
 
@@ -174,8 +180,10 @@ async def change_role():
 
         return response, 200
     except UserIdException as e:
+        current_app.logger.error(e)
         return jsonify({"msg": str(e)}), 401
-    except Exception:
+    except Exception as e:
+        current_app.logger.error(e)
         return jsonify({"msg": 'Internal server error'}), 500
 
 
@@ -192,7 +200,8 @@ async def get_user_description():
         return response, 200
     except UserIdException as e:
         return jsonify({"msg": str(e)}), 401
-    except Exception:
+    except Exception as e:
+        current_app.logger.error(e)
         return jsonify({"msg": 'Internal server error'}), 500
 
 
@@ -204,8 +213,10 @@ async def sign_in_history():
         data = get_history(request)
         return jsonify(data)
     except HistoryException as e:
+        current_app.logger.error(e)
         return jsonify({"msg": str(e)}), 500
-    except Exception:
+    except Exception as e:
+        current_app.logger.error(e)
         return jsonify({"msg": 'Internal server error'}), 500
 
 
@@ -215,5 +226,6 @@ async def swagger():
     try:
         with open('core/swagger/swagger.json', 'r') as f:
             return jsonify(json.load(f))
-    except Exception:
+    except Exception as e:
+        current_app.logger.error(e)
         return jsonify({"msg": 'Internal server error'}), 500

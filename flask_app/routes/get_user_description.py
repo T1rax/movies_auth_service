@@ -2,9 +2,11 @@ from flask_jwt_extended import get_jwt
 from flask import current_app
 
 from core.errors import UserIdException
-from database.models import User
+from database.helpers import user_helper
+from performance.tracing.tracer import trace_it
 
 
+@trace_it
 def user_description(body_json):
     current_app.logger.info('Reading JWT')
     jwt_roles = get_jwt()['roles']
@@ -16,7 +18,7 @@ def user_description(body_json):
         user_id = get_jwt()['userid']
 
     current_app.logger.info('Searching for user in DB')
-    user = User.query.filter_by(id=user_id).first()
+    user = user_helper.get_user_by_id(id=user_id)
 
     if not user:
         current_app.logger.error('Invalid ID')
