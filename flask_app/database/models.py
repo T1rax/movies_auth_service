@@ -83,6 +83,12 @@ class User(db.Model):
         return f'<User {self.login}>'
 
     @classmethod
+    @trace_it
+    def get_user_by_id(cls, id):
+        return cls.query.filter_by(id=id).first()
+    
+    @classmethod
+    @trace_it
     def get_user_by_universal_login(cls, login, email):
         return cls.query.filter(or_(cls.login == login, cls.email == email)).first()
 
@@ -131,6 +137,11 @@ class UserHistory(db.Model):
     def __repr__(self):
         return f'<UserHistory {self.user_id}>'
     
+    @classmethod
+    @trace_it
+    def get_history_by_user_id(cls, user_id, page, per_page):
+        return cls.query.filter_by(user_id=user_id).paginate(page=page, per_page=per_page)
+    
     @trace_it
     def set_device_type(self):
         device = DeviceDetector(self.useragent, skip_bot_detection=True).parse()
@@ -160,6 +171,7 @@ class SocialAccount(db.Model):
     def __repr__(self):
         return f'<SocialAccount {self.provider}:{self.user_id}>'
 
-    @staticmethod
-    def get_user_social(provider, social_id):
-        return SocialAccount.query.filter_by(provider=provider, social_id=social_id).one_or_none()
+    @classmethod
+    @trace_it
+    def get_user_social(cls, provider, social_id):
+        return cls.query.filter_by(provider=provider, social_id=social_id).one_or_none()

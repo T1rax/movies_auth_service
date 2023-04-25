@@ -59,7 +59,8 @@ async def oauth_callback(provider):
         jwt_helper.create_tokens()
         jwt_helper.set_tokens(response)
         return response, 200
-    except Exception:
+    except Exception as e:
+        current_app.logger.error(e)
         return jsonify({"msg": 'Internal server error'}), 500
 
 

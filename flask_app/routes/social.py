@@ -3,8 +3,10 @@ from sqlalchemy.exc import IntegrityError
 from database.db import db
 from database.models import User, SocialAccount
 from flask import current_app
+from performance.tracing.tracer import trace_it
 
 
+@trace_it
 def get_or_create_social_account(provider, social_id, first_name, last_name, email=None):
     if email:
         login = email.split('@')[0]
@@ -42,5 +44,6 @@ def get_or_create_social_account(provider, social_id, first_name, last_name, ema
     return user
 
 
+@trace_it
 def check_user_social(provider, social_id):
     return SocialAccount.get_user_social(provider, social_id)
