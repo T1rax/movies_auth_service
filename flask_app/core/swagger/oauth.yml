@@ -1,0 +1,19 @@
+Description
+---
+post:
+  summary: OAuth sign-in a user
+  description: >
+    In success returns pair of JWT
+  tags:
+    - Authentification
+  parameters:
+    - name: provider
+      in: path
+      example: google
+      description: oauth provider
+      required: true
+      schema:
+        type: string
+  responses:
+    200:
+      description: 'Ok'
