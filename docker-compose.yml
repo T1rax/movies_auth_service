@@ -9,7 +9,7 @@ services:
     depends_on:
       - flaskapp
     ports:
-      - 80:80
+      - 81:81
 
   postgres:
     image: postgres:alpine

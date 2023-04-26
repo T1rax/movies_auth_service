@@ -35,12 +35,12 @@ response1 = requests.post('http://127.0.0.1/auth/sign-in')
 
 # Вова
 
-# data = {'login': 'test_login3',
-#         'password': 'test_password',
-#         'first_name': 'Nikola',
-#         'last_name': 'Lenivetc'}
+data = {'login': 'test_login4',
+        'password': 'test_password',
+        'first_name': 'Nikola',
+        'last_name': 'Lenivetc'}
 
-# response = requests.post('http://127.0.0.1/auth/sign-up', json=data)
+response = requests.post('http://127.0.0.1/auth/sign-up', json=data)
 
 
 # data_login = {'login': 'test_login3',
@@ -63,13 +63,13 @@ response1 = requests.post('http://127.0.0.1/auth/sign-in')
 # response1 = requests.get('http://127.0.0.1/auth/sign-in', json=data_login)
 #
 #
-# print(response.text)
-# print('-----------------------------')
-# print(response.cookies)
+print(response.text)
+print('-----------------------------')
+print(response.cookies)
 
-response1 = requests.get('http://127.0.0.1/auth/')
-print(response1.status_code)
+# response1 = requests.get('http://127.0.0.1/auth/')
+# print(response1.status_code)
 
-for i in range(21):
-	response = requests.get('http://127.0.0.1/auth/', cookies=response1.cookies)
-	print(response.status_code)
+# for i in range(21):
+# 	response = requests.get('http://127.0.0.1/auth/', cookies=response1.cookies)
+# 	print(response.status_code)
