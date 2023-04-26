@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request, render_template, current_app
+from flask import Blueprint, jsonify, request, render_template, current_app, url_for
 import json
 import click
 from flask_jwt_extended import jwt_required, get_jwt
@@ -7,6 +7,7 @@ from core.errors import RegistrationException, UserIdException, LoginException, 
 from encryption.jwt import jwt_helper
 from apispec_fromfile import from_file
 
+from core.oauth import oauth, oauth_google, oauth_yandex
 #Routes import
 from routes.superuser import create_superuser
 # Account authorization routes
@@ -21,6 +22,38 @@ from routes.sign_in_history import get_history, add_history
 
 
 blueprint = Blueprint('auth', __name__, url_prefix='/auth')
+
+
+# http://127.0.0.1/auth/google/login
+# http://127.0.0.1/auth/yandex/login
+@from_file("core/swagger/oauth.yml")
+@blueprint.route('/<provider>/login', methods=["GET"])
+async def oauth_login(provider):
+    client = oauth.create_client(provider)
+    redirect_uri = url_for('auth.oauth_callback', provider=provider, _external=True)
+    return client.authorize_redirect(redirect_uri)
+
+
+@blueprint.route('/<provider>/callback', methods=["GET"])
+async def oauth_callback(provider):
+    try:
+        client = oauth.create_client(provider)
+        token = client.authorize_access_token()
+
+        if provider == 'google':
+            user = oauth_google(provider)
+        elif provider == 'yandex':
+            user = oauth_yandex(provider)
+
+        response = jsonify({"msg": user.login})
+        current_app.logger.info('Adding JWT to cookies')
+        jwt_helper.user_id = user.id
+        jwt_helper.create_tokens()
+        jwt_helper.set_tokens(response)
+        return response, 200
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify({"msg": 'Internal server error'}), 500
 
 
 #Bash routes
@@ -159,6 +192,7 @@ async def get_user_description():
 
         return response, 200
     except UserIdException as e:
+        current_app.logger.error(e)
         return jsonify({"msg": str(e)}), 401
     except Exception as e:
         current_app.logger.error(e)

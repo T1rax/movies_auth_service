@@ -3,7 +3,7 @@ from flask import current_app
 
 from core.errors import UserIdException
 from database.db import db
-from database.helpers import user_helper
+from database.models import User
 from core.config import configs
 from performance.tracing.tracer import trace_it
 
@@ -14,7 +14,7 @@ def user_change_role(body_json):
     user_jwt = get_jwt()['userid']
 
     current_app.logger.info('Searching for user in DB')
-    user = user_helper.get_user_by_id(id=user_jwt)
+    user = User.get_user_by_id(id=user_jwt)
 
     current_app.logger.info('Assessing roles')
     if 'admin' in user.roles or 'superUser' in user.roles:
@@ -22,7 +22,7 @@ def user_change_role(body_json):
     else:
         return {"msg":"Haven't got permission"}
 
-    user = user_helper.get_user_by_id(id=user_id)
+    user = User.get_user_by_id(id=user_id)
 
     if not user:
         current_app.logger.error('Invalid ID')

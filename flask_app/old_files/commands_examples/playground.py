@@ -9,9 +9,10 @@ import requests
 #
 # response = requests.post('http://127.0.0.1/auth/sign-up', json=data)
 #
-# data_login = {'login': 'test_login1',
-#               'password': 'test_password'}
-# response1 = requests.post('http://127.0.0.1/auth/sign-in', json=data_login)
+# # data_login = {'login': 'test_login1',
+# #               'password': 'test_password'}
+# # response1 = requests.post('http://127.0.0.1/auth/sign-in', json=data_login)
+response1 = requests.post('http://127.0.0.1/auth/sign-in')
 # #
 # data_desc = {'id': '10dd44fb-ff6d-4b20-80be-b72ecebc3603'}
 # response = requests.get('http://127.0.0.1/auth/get-user-description', cookies=response1.cookies, json=data_desc)

@@ -46,6 +46,7 @@ def register_docs(app):
         spec.path(view=bp.logout)
         spec.path(view=bp.sign_in)
         spec.path(view=bp.sign_up)
+        spec.path(view=bp.oauth_login)
 
         # Token-related routes
         spec.path(view=bp.refresh)
