@@ -6,6 +6,10 @@ class LoginException(Exception):
     pass
 
 
+class OAuthException(Exception):
+    pass
+
+
 class UserIdException(Exception):
     pass
 

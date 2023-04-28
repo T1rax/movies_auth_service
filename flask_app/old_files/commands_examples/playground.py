@@ -73,3 +73,14 @@ print(response1.status_code)
 for i in range(21):
 	response = requests.get('http://127.0.0.1/auth/', cookies=response1.cookies)
 	print(response.status_code)
+
+
+# https://oauth.vk.com/access_token?client_id=51618569&client_secret=5JsC4EdJQUJOxCV4XU0t&redirect_uri=http://127.0.0.1/auth/vk/callback&code=
+
+# {
+# "access_token": "vk1.a.RgpMONdgR4-_ysyMZjaesxaPjnEcp9VFclyc8dAevZKmeXbcR3Zs-8tVeuR4eiu8xTOfc0PE0uINS8PvhJod5bheExcZxuMqGX26gHgO1Z-Phk2UKxIW7r29NZrW4YRV3isgcBbDtC937nUpx7jHDQaT9ayFF_hvHSM_fpEw1gY3Zu44ZWyq7VQZZX7CJmcu",
+# "expires_in": 86361,
+# "user_id": 60223755
+# }
+
+# &scope=email

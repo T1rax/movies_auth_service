@@ -53,6 +53,7 @@ class OauthApps(BaseSettings):
     yandex: YandexOauth = YandexOauth()
     vk: VkOauth = VkOauth()
     secret_key: str = Field('some_key')
+    apps: set = Field({'google', 'yandex', 'vk'})
 
 
 class BaseConfig(BaseSettings):

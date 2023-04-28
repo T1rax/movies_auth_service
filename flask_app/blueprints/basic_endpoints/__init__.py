@@ -3,11 +3,12 @@ import json
 import click
 from flask_jwt_extended import jwt_required, get_jwt
 
-from core.errors import RegistrationException, UserIdException, LoginException, HistoryException
+from core.errors import RegistrationException, UserIdException, LoginException, HistoryException, OAuthException
 from encryption.jwt import jwt_helper
 from apispec_fromfile import from_file
 
-from core.oauth import oauth, oauth_google, oauth_yandex
+from core.oauth import oauth, oauth_google, oauth_yandex, oauth_vk
+from core.config import configs
 #Routes import
 from routes.superuser import create_superuser
 # Account authorization routes
@@ -26,17 +27,31 @@ blueprint = Blueprint('auth', __name__, url_prefix='/auth')
 
 # http://127.0.0.1/auth/google/login
 # http://127.0.0.1/auth/yandex/login
+# http://127.0.0.1/auth/vk/login
 @from_file("core/swagger/oauth.yml")
-@blueprint.route('/<provider>/login', methods=["GET"])
+@blueprint.route('/<string:provider>/login', methods=["GET"])
 async def oauth_login(provider):
-    client = oauth.create_client(provider)
-    redirect_uri = url_for('auth.oauth_callback', provider=provider, _external=True)
-    return client.authorize_redirect(redirect_uri)
+    try:
+        if provider not in configs.oauth.apps:
+            raise OAuthException("Provider nor supported")
+
+        client = oauth.create_client(provider)
+        redirect_uri = url_for('auth.oauth_callback', provider=provider, _external=True)
+        return client.authorize_redirect(redirect_uri)
+    except OAuthException as e:
+        current_app.logger.error(e)
+        return jsonify({"msg": str(e)}), 404
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify({"msg": 'Internal server error', 'error':e}), 500
 
 
-@blueprint.route('/<provider>/callback', methods=["GET"])
+@blueprint.route('/<string:provider>/callback', methods=["GET"])
 async def oauth_callback(provider):
     try:
+        if provider not in configs.oauth.apps:
+            raise OAuthException("Provider nor supported")
+
         client = oauth.create_client(provider)
         token = client.authorize_access_token()
 
@@ -44,6 +59,8 @@ async def oauth_callback(provider):
             user = oauth_google(provider)
         elif provider == 'yandex':
             user = oauth_yandex(provider)
+        elif provider == 'vk':
+            user = oauth_vk(provider, token)
 
         response = jsonify({"msg": user.login})
         current_app.logger.info('Adding JWT to cookies')
@@ -51,6 +68,9 @@ async def oauth_callback(provider):
         jwt_helper.create_tokens()
         jwt_helper.set_tokens(response)
         return response, 200
+    except OAuthException as e:
+        current_app.logger.error(e)
+        return jsonify({"msg": str(e)}), 404
     except Exception as e:
         current_app.logger.error(e)
         return jsonify({"msg": 'Internal server error'}), 500
