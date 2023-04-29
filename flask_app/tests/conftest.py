@@ -8,5 +8,6 @@ pytest_plugins = (
     'fixtures.asyncio',
     'fixtures.db',
     'fixtures.mds',
-    'fixtures.aiohttp'
+    'fixtures.aiohttp',
+    'fixtures.unit'
     )

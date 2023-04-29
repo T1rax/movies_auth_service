@@ -1,3 +1,4 @@
+from pytest_mock import mocker
 from app import app
 from routes.authorize import authorize_user
 
