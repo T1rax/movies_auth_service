@@ -35,14 +35,9 @@ def set_swagger_configuration(app):
 def set_oauth_configuration(app):
     app.config['GOOGLE_CLIENT_ID'] = configs.oauth.google.client_id
     app.config['GOOGLE_CLIENT_SECRET'] = configs.oauth.google.secret
-    app.config['GOOGLE_ACCESS_TOKEN_URL'] = 'https://oauth2.googleapis.com/token'
-    app.config['GOOGLE_AUTHORIZE_URL'] = 'https://accounts.google.com/o/oauth2/auth'
-    app.config['GOOGLE_API_BASE_URL'] = 'https://www.googleapis.com/oauth2/v1/'
-    app.config['GOOGLE_CLIENT_KWARGS'] = {'scope': 'openid email profile'}
-    app.config['GOOGLE_METADATA_URL'] = 'https://accounts.google.com/.well-known/openid-configuration'
 
     app.config['YANDEX_CLIENT_ID'] = configs.oauth.yandex.client_id
     app.config['YANDEX_CLIENT_SECRET'] = configs.oauth.yandex.secret
-    app.config['YANDEX_ACCESS_TOKEN_URL'] = 'https://oauth.yandex.com/token'
-    app.config['YANDEX_AUTHORIZE_URL'] = 'https://oauth.yandex.com/authorize'
-    app.config['YANDEX_API_BASE_URL'] = 'https://login.yandex.ru/'
+
+    app.config['VK_CLIENT_ID'] = configs.oauth.vk.client_id
+    app.config['VK_CLIENT_SECRET'] = configs.oauth.vk.secret

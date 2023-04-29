@@ -44,7 +44,6 @@ class VkOauth(BaseSettings):
     """Google Oauth settings"""
     client_id: str = Field('some_value_from_provider')
     secret: str = Field('some_value_from_provider')
-    service_key: str = Field('some_value_from_provider')
 
 
 class OauthApps(BaseSettings):
@@ -53,6 +52,7 @@ class OauthApps(BaseSettings):
     yandex: YandexOauth = YandexOauth()
     vk: VkOauth = VkOauth()
     secret_key: str = Field('some_key')
+    apps: set = Field({'google', 'yandex', 'vk'})
 
 
 class BaseConfig(BaseSettings):

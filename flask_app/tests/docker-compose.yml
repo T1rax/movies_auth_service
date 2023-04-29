@@ -20,26 +20,35 @@ services:
       - redis_auth_test_data:/opt/redis/test_auth_data
 
   flaskapp:
-    build: ../../.
+    build: ../.
     image: flaskapp-image
     restart: always
     environment:
       AUTH_MAIN__TESTING: true
     env_file:
-      - ../../../.env
+      - ../../.env
     depends_on:
       - postgres
       - redis
 
-  tests:
+  functional_tests:
     image: flaskapp-image
     entrypoint: >
-      sh -c "pytest tests/functional/src"
+      sh -c "pytest tests/src/functional"
     env_file:
-      - ../../../.env
+      - ../../.env
     depends_on:
       - postgres
       - redis
+      - flaskapp
+
+  unit_tests:
+    image: flaskapp-image
+    entrypoint: >
+      sh -c "pytest tests/src/unit"
+    env_file:
+      - ../../.env
+    depends_on:
       - flaskapp
 
 volumes:

@@ -2,7 +2,6 @@ import pytest
 import pytest_asyncio
 from redis.asyncio import Redis
 
-from utils.helpers import MdsHelper
 from settings import test_settings
 
 
