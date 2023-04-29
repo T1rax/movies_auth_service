@@ -2,7 +2,7 @@ from core.config import configs
 from logging import config as logging_config
 
 
-LOG_FORMAT = '%(asctime)s - %(module)s - %(levelname)s - %(message)s'
+LOG_FORMAT = '%(asctime)s - %(module)-10s - %(funcName)-20s - %(levelname)-5s - %(message)s'
 LOG_DEFAULT_HANDLERS = ['console']
 
 LOGGING = {

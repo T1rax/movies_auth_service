@@ -89,8 +89,13 @@ class User(db.Model):
     
     @classmethod
     @trace_it
-    def get_user_by_universal_login(cls, login, email):
-        return cls.query.filter(or_(cls.login == login, cls.email == email)).first()
+    def get_user_by_universal_login(cls, login = None, email = None):
+        if login is None:
+            return cls.query.filter(cls.email == email).first()
+        elif email is None:
+            return cls.query.filter(cls.login == login).first()
+        else:
+            return cls.query.filter(or_(cls.login == login, cls.email == email)).first()
 
     @staticmethod
     def generate_random_string():

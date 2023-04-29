@@ -3,8 +3,6 @@ import pytest_asyncio
 import aiohttp
 import uuid
 
-from utils.helpers import AiohttpHelper
-
 
 @pytest_asyncio.fixture(scope='session')
 async def aiohttp_session():
