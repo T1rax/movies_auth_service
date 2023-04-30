@@ -149,8 +149,11 @@ class UserHistory(db.Model):
     
     @trace_it
     def set_device_type(self):
-        device = DeviceDetector(self.useragent, skip_bot_detection=True).parse()
-        device_type = device.device_type()
+        try:
+            device = DeviceDetector(self.useragent, skip_bot_detection=True).parse()
+            device_type = device.device_type()
+        except:
+            device_type = 'other'
 
         if device_type in {'smartphone', 'desktop', 'tv'}:
             self.user_device_type = device_type
