@@ -54,9 +54,9 @@ def authorize():
         )
 
 
-# http://127.0.0.1/auth/google/login
-# http://127.0.0.1/auth/yandex/login
-# http://127.0.0.1/auth/vk/login
+# http://127.0.0.1/auth/v1/google/login
+# http://127.0.0.1/auth/v1/yandex/login
+# http://127.0.0.1/auth/v1/vk/login
 @from_file("core/swagger/oauth.yml")
 @blueprint.route("/<string:provider>/login", methods=["GET"])
 def oauth_login(provider):

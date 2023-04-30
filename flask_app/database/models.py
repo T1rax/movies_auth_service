@@ -13,55 +13,10 @@ from database.db import db
 from performance.tracing.tracer import trace_it
 
 
-def create_hisotory_partitions(target, connection, **kw) -> None:
-    """creating partition by history"""
-    connection.execute(
-        """CREATE TABLE IF NOT EXISTS "history_smartphone" PARTITION OF "histories" FOR VALUES IN ('smartphone')"""
-    )
-    connection.execute(
-        """CREATE TABLE IF NOT EXISTS "history_desktop" PARTITION OF "histories" FOR VALUES IN ('desktop')"""
-    )
-    connection.execute(
-        """CREATE TABLE IF NOT EXISTS "history_tv" PARTITION OF "histories" FOR VALUES IN ('tv')"""
-    )
-    connection.execute(
-        """CREATE TABLE IF NOT EXISTS "history_other" PARTITION OF "histories" FOR VALUES IN ('other')"""
-    )
-
-
-def create_user_partitions(target, connection, **kw) -> None:
-    """creating partition by user"""
-    connection.execute(
-        """CREATE TABLE IF NOT EXISTS "users_age_undefined" PARTITION OF "users" FOR VALUES IN ('undefined')"""
-    )
-    connection.execute(
-        """CREATE TABLE IF NOT EXISTS "users_age_0_17" PARTITION OF "users" FOR VALUES IN ('0-17')"""
-    )
-    connection.execute(
-        """CREATE TABLE IF NOT EXISTS "users_age_18_24" PARTITION OF "users" FOR VALUES IN ('18-24')"""
-    )
-    connection.execute(
-        """CREATE TABLE IF NOT EXISTS "users_age_25_34" PARTITION OF "users" FOR VALUES IN ('25-34')"""
-    )
-    connection.execute(
-        """CREATE TABLE IF NOT EXISTS "users_age_35_44" PARTITION OF "users" FOR VALUES IN ('35-44')"""
-    )
-    connection.execute(
-        """CREATE TABLE IF NOT EXISTS "users_age_45_64" PARTITION OF "users" FOR VALUES IN ('45-64')"""
-    )
-    connection.execute(
-        """CREATE TABLE IF NOT EXISTS "users_age_65_inf" PARTITION OF "users" FOR VALUES IN ('65+')"""
-    )
-
-
 class User(db.Model):
     """Model for User"""
 
     __tablename__ = "users"
-    __table_args__ = {
-        "postgresql_partition_by": "LIST (age_group)",
-        "listeners": [("after_create", create_user_partitions)],
-    }
 
     id = db.Column(
         UUID(as_uuid=True),
@@ -90,7 +45,6 @@ class User(db.Model):
         default="undefined",
     )
     roles = db.Column(db.PickleType(), nullable=False)
-    # social_accounts = db.relationship('social_accounts', backref='user')
 
     def __repr__(self):
         return f"<User {self.login}>"
@@ -133,13 +87,6 @@ class UserHistory(db.Model):
     """Model for recording user login history"""
 
     __tablename__ = "histories"
-    __table_args__ = (
-        UniqueConstraint("id", "user_device_type"),
-        {
-            "postgresql_partition_by": "LIST (user_device_type)",
-            "listeners": [("after_create", create_hisotory_partitions)],
-        },
-    )
 
     id = db.Column(
         UUID(as_uuid=True),
