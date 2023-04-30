@@ -6,6 +6,7 @@ from opentelemetry.sdk.resources import Resource
 from opentelemetry.instrumentation.flask import FlaskInstrumentor
 from opentelemetry.sdk.trace.export import BatchSpanProcessor, ConsoleSpanExporter
 from opentelemetry.exporter.jaeger.thrift import JaegerExporter
+from core.config import configs
 
 
 tracer = trace.get_tracer(__name__)
@@ -36,8 +37,8 @@ def configure_tracer(app) -> None:
     trace.get_tracer_provider().add_span_processor(
         BatchSpanProcessor(
             JaegerExporter(
-                agent_host_name='jaeger',
-                agent_port=6831,
+                agent_host_name=configs.tracing.host,
+                agent_port=configs.tracing.port,
             )
         )
     )

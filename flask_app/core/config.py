@@ -13,7 +13,7 @@ class MainConfig(BaseSettings):
 class MemoryDataStorageConfig(BaseSettings):
     """ Cache settings """
     address: str = Field('http://redis:6379')
-    host: str = Field('127.0.0.1')
+    host: str = Field('redis')
     port: int = Field(6379)
     exp: int = Field(60 * 5)  # 5 minutes
 
@@ -26,6 +26,12 @@ class DataBaseConfig(BaseSettings):
     password: str = Field('123qwe')
     host: str = Field('127.0.0.1')
     port: str = Field('5432')
+
+
+class TracingConfig(BaseSettings):
+    """ Cache settings """
+    host: str = Field('jaeger')
+    port: int = Field(6831)
 
 
 class GoogleOauth(BaseSettings):
@@ -58,6 +64,7 @@ class OauthApps(BaseSettings):
 class BaseConfig(BaseSettings):
     mds: MemoryDataStorageConfig = MemoryDataStorageConfig()
     db: DataBaseConfig = DataBaseConfig()
+    tracing: TracingConfig = TracingConfig()
     main: MainConfig = MainConfig()
     oauth: OauthApps = OauthApps()
 
