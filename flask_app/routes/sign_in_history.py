@@ -1,5 +1,5 @@
 from flask_jwt_extended import get_jwt
-from flask import current_app
+from flask import current_app, Request
 
 from core.errors import HistoryException
 from database.db import db
@@ -8,7 +8,10 @@ from performance.tracing.tracer import trace_it
 
 
 @trace_it
-def get_history(request):
+def get_history(request: Request) -> list[dict]:
+    """
+    Returns list of user login activity, retrieved from database
+    """
     current_app.logger.info("Reading JWT")
     user_jwt = get_jwt()["userid"]
 
@@ -55,7 +58,10 @@ def get_history(request):
 
 
 @trace_it
-def add_history(request, user_id, action):
+def add_history(request: Request, user_id: int | str, action: str) -> None:
+    """
+    Adds user's login to user history in database
+    """
     user_history = UserHistory(
         user_id=str(user_id),
         useragent=str(request.user_agent),

@@ -8,8 +8,14 @@ from performance.tracing.tracer import trace_it
 
 @trace_it
 def get_or_create_social_account(
-    provider, social_id, first_name, last_name, email=None
-):
+    provider: str, social_id: str, first_name: str, last_name: str, email: str = None
+) -> User:
+    """
+    Checks in database for social account
+    If account is now found, creates it
+    If user was not registered before, registers them
+    After success returns filled user object
+    """
     if email:
         login = email.split("@")[0]
     else:
@@ -46,5 +52,9 @@ def get_or_create_social_account(
 
 
 @trace_it
-def check_user_social(provider, social_id):
+def check_user_social(provider: str, social_id: str) -> SocialAccount:
+    """
+    Looks in database for user's social account
+    Returns filled social account object
+    """
     return SocialAccount.get_user_social(provider, social_id)

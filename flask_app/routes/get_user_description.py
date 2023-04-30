@@ -7,7 +7,10 @@ from performance.tracing.tracer import trace_it
 
 
 @trace_it
-def user_description(body_json):
+def user_description(body_json: dict) -> dict:
+    """
+    Returns user description, retrieved from database
+    """
     current_app.logger.info("Reading JWT")
     jwt_roles = get_jwt()["roles"]
 

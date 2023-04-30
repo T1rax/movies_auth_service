@@ -9,7 +9,11 @@ from performance.tracing.tracer import trace_it
 
 
 @trace_it
-def user_change_role(body_json):
+def user_change_role(body_json: dict) -> dict:
+    """
+    Updates user's role
+    Accepts user, target role and what to do with it
+    """
     current_app.logger.info("Reading JWT")
     user_jwt = get_jwt()["userid"]
 

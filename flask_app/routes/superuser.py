@@ -7,7 +7,10 @@ from performance.tracing.tracer import trace_it
 
 
 @trace_it
-def create_superuser(login, password):
+def create_superuser(login: str, password: str) -> None:
+    """
+    Create superuser in database, that could do almost everything
+    """
     current_app.logger.info("Creating user instance")
 
     user = User(login=login, roles=["superUser"])

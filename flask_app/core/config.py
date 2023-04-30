@@ -31,7 +31,7 @@ class DataBaseConfig(BaseSettings):
 
 
 class TracingConfig(BaseSettings):
-    """Cache settings"""
+    """Tracing settings"""
 
     host: str = Field("jaeger")
     port: int = Field(6831)
@@ -39,7 +39,7 @@ class TracingConfig(BaseSettings):
 
 
 class RpmConfig(BaseSettings):
-    """Cache settings"""
+    """Requests limiter settings"""
 
     limit: int = Field(20)
     need_to_launch: bool = Field(True)

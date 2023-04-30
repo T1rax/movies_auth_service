@@ -3,7 +3,10 @@ from performance.tracing.tracer import trace_it
 
 
 @trace_it
-def authorize_user(jwt_token):
+def authorize_user(jwt_token: dict) -> dict:
+    """
+    Returns information about user retrieved from token
+    """
     current_app.logger.info("Reading JWT")
 
     response = {

@@ -2,11 +2,15 @@ from core.errors import LoginException
 from database.models import User
 from routes.sign_in_history import add_history
 from performance.tracing.tracer import trace_it
-from flask import current_app
+from flask import current_app, Request
 
 
 @trace_it
-def login_user(request):
+def login_user(request: Request) -> User:
+    """
+    Checks provided ligon in password in database
+    If succeeds, returns user object and adds ligon to history
+    """
     body_json = request.get_json()
 
     current_app.logger.info("Looking for user in DB")
