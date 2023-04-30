@@ -34,7 +34,7 @@ blueprint = Blueprint("auth", __name__, url_prefix="/auth")
 
 # Home page
 @blueprint.route("/", methods=["GET"])
-async def main_page():
+def main_page():
     return render_template("home.html")
 
 
@@ -42,7 +42,7 @@ async def main_page():
 @from_file("core/swagger/authorize.yml")
 @blueprint.route("/authorize", methods=["POST"])
 @jwt_required(locations=["cookies"])
-async def authorize():
+def authorize():
     try:
         response = authorize_user(get_jwt())
         return jsonify(response), HTTPStatus.OK
@@ -59,7 +59,7 @@ async def authorize():
 # http://127.0.0.1/auth/vk/login
 @from_file("core/swagger/oauth.yml")
 @blueprint.route("/<string:provider>/login", methods=["GET"])
-async def oauth_login(provider):
+def oauth_login(provider):
     try:
         if provider not in configs.oauth.apps:
             raise OAuthException("Provider nor supported")
@@ -79,7 +79,7 @@ async def oauth_login(provider):
 
 
 @blueprint.route("/<string:provider>/callback", methods=["GET"])
-async def oauth_callback(provider):
+def oauth_callback(provider):
     try:
         if provider not in configs.oauth.apps:
             raise OAuthException("Provider nor supported")
@@ -114,7 +114,7 @@ async def oauth_callback(provider):
 @from_file("core/swagger/logout.yml")
 @blueprint.route("/logout", methods=["GET", "POST"])
 @jwt_required(locations=["cookies"])
-async def logout():
+def logout():
     try:
         response = jsonify({"msg": "logout successful"})
 
@@ -135,7 +135,7 @@ async def logout():
 
 @from_file("core/swagger/sign_in.yml")
 @blueprint.route("/sign-in", methods=["POST"])
-async def sign_in():
+def sign_in():
     try:
         user = login_user(request)
         response = jsonify({"msg": "login successful"})
@@ -158,7 +158,7 @@ async def sign_in():
 
 @from_file("core/swagger/sign_up.yml")
 @blueprint.route("/sign-up", methods=["POST"])
-async def sign_up():
+def sign_up():
     try:
         user = register_user(request)
         response = jsonify({"msg": "registration successful"})
@@ -183,7 +183,7 @@ async def sign_up():
 @from_file("core/swagger/refresh.yml")
 @blueprint.route("/refresh", methods=["POST"])
 @jwt_required(refresh=True, locations=["cookies"])
-async def refresh():
+def refresh():
     try:
         response = jsonify({"msg": "tokens refreshed"})
 
@@ -203,7 +203,7 @@ async def refresh():
 @from_file("core/swagger/change_role.yml")
 @blueprint.route("/change-role", methods=["POST"])
 @jwt_required(locations=["cookies"])
-async def change_role():
+def change_role():
     try:
         data = request.get_json()
         raw_response = user_change_role(data)
@@ -225,7 +225,7 @@ async def change_role():
 @from_file("core/swagger/get_user_description.yml")
 @blueprint.route("/get-user-description", methods=["GET"])
 @jwt_required(locations=["cookies"])
-async def get_user_description():
+def get_user_description():
     try:
         data = request.get_json()
         user = user_description(data)
@@ -246,7 +246,7 @@ async def get_user_description():
 @from_file("core/swagger/sign_in_history.yml")
 @blueprint.route("/sign-in-history", methods=["GET"])
 @jwt_required(locations=["cookies"])
-async def sign_in_history():
+def sign_in_history():
     try:
         data = get_history(request)
         return jsonify(data)
@@ -263,7 +263,7 @@ async def sign_in_history():
 
 # Documentation
 @blueprint.route("/swagger.json")
-async def swagger():
+def swagger():
     try:
         with open("core/swagger/swagger.json", "r") as f:
             return jsonify(json.load(f))

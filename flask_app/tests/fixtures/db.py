@@ -8,8 +8,8 @@ from database.models import User, UserHistory
 from testdata.create_users import load_test_data
 
 
-@pytest_asyncio.fixture(scope="session")
-async def db_client():
+@pytest.fixture(scope="session")
+def db_client():
     def _truncate_tables(models):
         for model in models:
             db.session.query(model).delete()
