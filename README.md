@@ -1,7 +1,7 @@
 # movies_auth_service
 Service for Online cinema users authorisation
 
-##Main pages reference
+## Main pages reference
 - Current Host - 127.0.0.1
 - Port - 80
 - Auth homepage - /auth

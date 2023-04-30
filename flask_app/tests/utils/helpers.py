@@ -1,27 +1,27 @@
 class NoResultsEsception(Exception):
     "Raised when service return empty results"
     pass
-        
+
 
 # class MdsHelper:
 #     def __init__(self, cache_client, test_config):
 #         self.cache_client = cache_client
 
-    
+
 #     async def clear_all(self):
 #         await self.cache_client.flushall()
-        
+
 #     async def get_value(self, key):
 #         return await self.cache_client.get(key)
-    
+
 #     def ping(self):
 #         pass
-    
+
 
 # class AiohttpHelper:
 #     def __init__(self, aiohttp_session, test_config):
 #         self.session = aiohttp_session
-    
+
 #     async def make_get_request(self, url, path, params=None):
 #         response = await self.session.get(url+path, json=params)
 
@@ -34,7 +34,7 @@ class NoResultsEsception(Exception):
 #             body_text = await response.text()
 #         except:
 #             body_text = None
-    
+
 
 #         return response, body_json, body_text
 
@@ -47,7 +47,7 @@ class NoResultsEsception(Exception):
 
 #     def ping(self):
 #         pass
-    
+
 #     def get_user_data(self):
 #         pass
 

@@ -1,6 +1,7 @@
 Flask[async]==2.2.3
 flask_sqlalchemy==3.0.3
 Flask-Migrate==4.0.4
+gevent==22.10.2
 pydantic==1.10.6
 SQLAlchemy==2.0.8
 psycopg2==2.9.6

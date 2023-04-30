@@ -17,11 +17,13 @@ post:
       required: true
       schema:
         type: string
+        enum: [premiumUser, admin]
     - name: action
       in: json
       required: true
       schema:
         type: string
+        enum: [add, delete]
     - name: access_token_cookie
       in: cookie
       required: true
@@ -35,3 +37,5 @@ post:
   responses:
     200:
       description: 'Ok'
+    500:
+      description: 'Internal server error'

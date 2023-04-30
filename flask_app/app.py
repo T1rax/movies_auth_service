@@ -1,12 +1,13 @@
 from flask import Flask
 from flask_migrate import Migrate
-from authlib.integrations.flask_client import OAuth
 
 from database.db import db
 from core.oauth import register_oauth_apps
 
-from blueprints.basic_endpoints import blueprint as basic_endpoints
-from blueprints.basic_endpoints.swagger import swaggerui_blueprint
+from blueprints.v1.basic_endpoints.core_endpoints import blueprint as basic_endpoints_v1
+from blueprints.v1.bash_endpoints.users import blueprint as bash_endpoints_v1
+from blueprints.v1.basic_endpoints.swagger import swaggerui_blueprint
+from blueprints.v1.basic_endpoints.swagger import blueprint as swagger_json_blueprint
 from core.flask_configuration import set_flask_configuration
 from core.logger import set_up_logging
 from core.config import configs
@@ -23,9 +24,11 @@ app = Flask(__name__)
 # Set App variables
 set_flask_configuration(app)
 
-#Blueprints
-app.register_blueprint(basic_endpoints)
-app.register_blueprint(swaggerui_blueprint) 
+# Blueprints
+app.register_blueprint(basic_endpoints_v1, url_prefix="/auth/v1")
+app.register_blueprint(bash_endpoints_v1)
+app.register_blueprint(swagger_json_blueprint, url_prefix="/auth")
+app.register_blueprint(swaggerui_blueprint)
 
 # Registry OAuth
 register_oauth_apps(app)
@@ -37,13 +40,16 @@ migrate = Migrate(app, db)
 # Encryption
 jwt = create_jwt(app)
 
-# Performance logging 
-set_rpm_limit(app)
-configure_tracer(app)
+# Performance logging
+if configs.rpm.need_to_launch:
+    set_rpm_limit(app)
+
+if configs.tracing.need_to_launch:
+    configure_tracer(app)
 
 # Documentation
 register_docs(app)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run()

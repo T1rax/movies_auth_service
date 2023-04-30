@@ -7,17 +7,19 @@ from performance.tracing.tracer import trace_it
 
 
 @trace_it
-def create_superuser(login, password):
-    current_app.logger.info('Creating user instance')
+def create_superuser(login: str, password: str) -> None:
+    """
+    Create superuser in database, that could do almost everything
+    """
+    current_app.logger.info("Creating user instance")
 
-    user = User(login=login,
-                roles=['superUser'])
+    user = User(login=login, roles=["superUser"])
 
     user.set_password(password)
 
     try:
         db.session.add(user)
         db.session.commit()
-        current_app.logger.info('User created')
+        current_app.logger.info("User created")
     except IntegrityError:
-        raise RegistrationException('User already exists')
+        raise RegistrationException("User already exists")

@@ -3,7 +3,8 @@ Description
 get:
   summary: OAuth sign-in a user
   description: >
-    Opens auth page from provider and after success redirects to callback
+    Retrieves information about user from Oauth provider
+    and in success returns pair of JWT tokens
   tags:
     - Authentification
   parameters:
