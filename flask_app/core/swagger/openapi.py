@@ -2,7 +2,7 @@ from apispec import APISpec
 from apispec_webframeworks.flask import FlaskPlugin
 from apispec_fromfile import FromFilePlugin
 
-import blueprints.basic_endpoints as bp
+import blueprints.v1.basic_endpoints.core_endpoints as bp
 import json
 
 

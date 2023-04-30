@@ -1,15 +1,14 @@
 from flask import Flask
 from flask_migrate import Migrate
-from authlib.integrations.flask_client import OAuth
 
 from database.db import db
 from core.oauth import register_oauth_apps
 
-from blueprints.basic_endpoints import blueprint as basic_endpoints
-from blueprints.basic_endpoints.swagger import swaggerui_blueprint
+from blueprints.v1.basic_endpoints.core_endpoints import blueprint as basic_endpoints_v1
+from blueprints.v1.bash_endpoints.users import blueprint as bash_endpoints_v1
+from blueprints.v1.basic_endpoints.swagger import swaggerui_blueprint
 from core.flask_configuration import set_flask_configuration
 from core.logger import set_up_logging
-from core.config import configs
 from encryption.jwt import create_jwt
 from performance.requests_limit.rpm import set_rpm_limit
 from performance.tracing.tracer import configure_tracer
@@ -24,7 +23,8 @@ app = Flask(__name__)
 set_flask_configuration(app)
 
 #Blueprints
-app.register_blueprint(basic_endpoints)
+app.register_blueprint(basic_endpoints_v1, url_prefix='/auth/v1')
+app.register_blueprint(bash_endpoints_v1)
 app.register_blueprint(swaggerui_blueprint) 
 
 # Registry OAuth

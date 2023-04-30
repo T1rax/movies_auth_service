@@ -1,6 +1,6 @@
 from pytest_mock import mocker
 from app import app
-from blueprints.basic_endpoints import sign_in
+from blueprints.v1.basic_endpoints.core_endpoints import sign_in
 import flask
 
 

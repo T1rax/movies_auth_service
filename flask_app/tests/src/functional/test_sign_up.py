@@ -20,7 +20,7 @@ from settings import test_settings
 @pytest.mark.asyncio
 async def test_registration(test_config, payload, expected_answer, default_headers, aiohttp_session, db_client, mds_client):
 
-    response = await aiohttp_session.post(test_config.service_url+'/auth/sign-up', json=payload, headers=default_headers)
+    response = await aiohttp_session.post(test_config.service_url+'/auth/v1/sign-up', json=payload, headers=default_headers)
 
     cookies_dict = response.cookies
 
