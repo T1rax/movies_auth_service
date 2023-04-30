@@ -12,6 +12,7 @@ swaggerui_blueprint = get_swaggerui_blueprint(
 
 blueprint = Blueprint("swagger", __name__)
 
+
 # Documentation
 @blueprint.route("/swagger.json")
 def swagger():
