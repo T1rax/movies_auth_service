@@ -1,5 +1,4 @@
 from flask import Blueprint, jsonify, request, render_template, current_app, url_for
-import json
 from http import HTTPStatus
 from flask_jwt_extended import jwt_required, get_jwt
 
@@ -29,7 +28,7 @@ from routes.get_user_description import user_description
 from routes.sign_in_history import get_history, add_history
 
 
-blueprint = Blueprint("auth", __name__, url_prefix="/auth")
+blueprint = Blueprint("auth", __name__)
 
 
 # Home page
@@ -78,6 +77,7 @@ def oauth_login(provider):
         )
 
 
+@from_file("core/swagger/oauth_callback.yml")
 @blueprint.route("/<string:provider>/callback", methods=["GET"])
 def oauth_callback(provider):
     try:
@@ -253,20 +253,6 @@ def sign_in_history():
     except HistoryException as e:
         current_app.logger.error(e)
         return jsonify({"msg": str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR
-    except Exception as e:
-        current_app.logger.error(e)
-        return (
-            jsonify({"msg": "Internal server error"}),
-            HTTPStatus.INTERNAL_SERVER_ERROR,
-        )
-
-
-# Documentation
-@blueprint.route("/swagger.json")
-def swagger():
-    try:
-        with open("core/swagger/swagger.json", "r") as f:
-            return jsonify(json.load(f))
     except Exception as e:
         current_app.logger.error(e)
         return (

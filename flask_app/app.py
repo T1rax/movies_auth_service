@@ -7,6 +7,7 @@ from core.oauth import register_oauth_apps
 from blueprints.v1.basic_endpoints.core_endpoints import blueprint as basic_endpoints_v1
 from blueprints.v1.bash_endpoints.users import blueprint as bash_endpoints_v1
 from blueprints.v1.basic_endpoints.swagger import swaggerui_blueprint
+from blueprints.v1.basic_endpoints.swagger import blueprint as swagger_json_blueprint
 from core.flask_configuration import set_flask_configuration
 from core.logger import set_up_logging
 from core.config import configs
@@ -26,6 +27,7 @@ set_flask_configuration(app)
 # Blueprints
 app.register_blueprint(basic_endpoints_v1, url_prefix="/auth/v1")
 app.register_blueprint(bash_endpoints_v1)
+app.register_blueprint(swagger_json_blueprint, url_prefix="/auth")
 app.register_blueprint(swaggerui_blueprint)
 
 # Registry OAuth

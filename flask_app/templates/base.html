@@ -19,7 +19,10 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
             <li class="nav-item active">
-                <a class="nav-link" href="{{ url_for('auth.swagger')}}" target="_blank" rel="noopener noreferrer">Swagger</a>
+                <a class="nav-link" href="{{ url_for('swagger_ui.show')}}" target="_blank" rel="noopener noreferrer">Swagger UI</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="{{ url_for('swagger.swagger')}}" target="_blank" rel="noopener noreferrer">Swagger JSON</a>
             </li>
             </ul>
         </div>

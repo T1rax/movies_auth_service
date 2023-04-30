@@ -20,3 +20,5 @@ post:
   responses:
     200:
       description: 'Ok'
+    500:
+      description: 'Internal server error'

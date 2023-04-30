@@ -24,3 +24,7 @@ post:
   responses:
     200:
       description: 'Ok'
+    401:
+      description: Invalid login or password
+    500:
+      description: 'Internal server error'
