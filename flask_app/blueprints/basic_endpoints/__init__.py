@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request, render_template, current_app, url_for
 import json
 import click
+from http import HTTPStatus
 from flask_jwt_extended import jwt_required, get_jwt
 
 from core.errors import RegistrationException, UserIdException, LoginException, HistoryException, OAuthException
@@ -40,10 +41,10 @@ async def oauth_login(provider):
         return client.authorize_redirect(redirect_uri)
     except OAuthException as e:
         current_app.logger.error(e)
-        return jsonify({"msg": str(e)}), 404
+        return jsonify({"msg": str(e)}), HTTPStatus.NOT_FOUND
     except Exception as e:
         current_app.logger.error(e)
-        return jsonify({"msg": 'Internal server error', 'error':e}), 500
+        return jsonify({"msg": 'Internal server error', 'error':e}), HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 @blueprint.route('/<string:provider>/callback', methods=["GET"])
@@ -67,13 +68,13 @@ async def oauth_callback(provider):
         jwt_helper.user_id = user.id
         jwt_helper.create_tokens()
         jwt_helper.set_tokens(response)
-        return response, 200
+        return response, HTTPStatus.OK
     except OAuthException as e:
         current_app.logger.error(e)
-        return jsonify({"msg": str(e)}), 404
+        return jsonify({"msg": str(e)}), HTTPStatus.NOT_FOUND
     except Exception as e:
         current_app.logger.error(e)
-        return jsonify({"msg": 'Internal server error'}), 500
+        return jsonify({"msg": 'Internal server error'}), HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 #Bash routes
@@ -99,10 +100,10 @@ async def main_page():
 async def authorize():
     try:
         response = authorize_user(get_jwt())
-        return jsonify(response), 200
+        return jsonify(response), HTTPStatus.OK
     except Exception as e:
         current_app.logger.error(e)
-        return jsonify({"msg": 'Internal server error'}), 500
+        return jsonify({"msg": 'Internal server error'}), HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 @from_file("core/swagger/logout.yml")
@@ -118,10 +119,10 @@ async def logout():
         current_app.logger.info('Dropping JWT from cookies')
         jwt_helper.drop_tokens(response)
 
-        return response, 200
+        return response, HTTPStatus.OK
     except Exception as e:
         current_app.logger.error(e)
-        return jsonify({"msg": 'Internal server error'}), 500
+        return jsonify({"msg": 'Internal server error'}), HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 @from_file("core/swagger/sign_in.yml")
@@ -135,13 +136,13 @@ async def sign_in():
         jwt_helper.user_id = user.id
         jwt_helper.create_tokens()
         jwt_helper.set_tokens(response)
-        return response, 200
+        return response, HTTPStatus.OK
     except LoginException as e:
         current_app.logger.error(e)
-        return jsonify({"msg": str(e)}), 401
+        return jsonify({"msg": str(e)}), HTTPStatus.UNAUTHORIZED
     except Exception as e:
         current_app.logger.error(e)
-        return jsonify({"msg": 'Internal server error'}), 500
+        return jsonify({"msg": 'Internal server error'}), HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 @from_file("core/swagger/sign_up.yml")
@@ -155,13 +156,13 @@ async def sign_up():
         jwt_helper.user_id = user.id
         jwt_helper.create_tokens()
         jwt_helper.set_tokens(response)
-        return response, 200
+        return response, HTTPStatus.OK
     except RegistrationException as e:
         current_app.logger.error(e)
-        return jsonify({"msg": str(e)}), 401
+        return jsonify({"msg": str(e)}), HTTPStatus.UNAUTHORIZED
     except Exception as e:
         current_app.logger.error(e)
-        return jsonify({"msg": 'Internal server error'}), 500
+        return jsonify({"msg": 'Internal server error'}), HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 # Token-related routes
@@ -175,10 +176,10 @@ async def refresh():
         current_app.logger.info('Adding JWT to cookies')
         jwt_helper.create_tokens()
         jwt_helper.set_tokens(response)
-        return response, 200
+        return response, HTTPStatus.OK
     except Exception as e:
         current_app.logger.error(e)
-        return jsonify({"msg": 'Internal server error'}), 500
+        return jsonify({"msg": 'Internal server error'}), HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 # Roles routes
@@ -191,13 +192,13 @@ async def change_role():
         raw_response = user_change_role(data)
         response = jsonify(raw_response)
 
-        return response, 200
+        return response, HTTPStatus.OK
     except UserIdException as e:
         current_app.logger.error(e)
-        return jsonify({"msg": str(e)}), 401
+        return jsonify({"msg": str(e)}), HTTPStatus.UNAUTHORIZED
     except Exception as e:
         current_app.logger.error(e)
-        return jsonify({"msg": 'Internal server error'}), 500
+        return jsonify({"msg": 'Internal server error'}), HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 # Support routes
@@ -210,13 +211,13 @@ async def get_user_description():
         user = user_description(data)
         response = jsonify({"msg": 'User exists', 'user': user})
 
-        return response, 200
+        return response, HTTPStatus.OK
     except UserIdException as e:
         current_app.logger.error(e)
-        return jsonify({"msg": str(e)}), 401
+        return jsonify({"msg": str(e)}), HTTPStatus.UNAUTHORIZED
     except Exception as e:
         current_app.logger.error(e)
-        return jsonify({"msg": 'Internal server error'}), 500
+        return jsonify({"msg": 'Internal server error'}), HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 @from_file("core/swagger/sign_in_history.yml")
@@ -228,10 +229,10 @@ async def sign_in_history():
         return jsonify(data)
     except HistoryException as e:
         current_app.logger.error(e)
-        return jsonify({"msg": str(e)}), 500
+        return jsonify({"msg": str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR
     except Exception as e:
         current_app.logger.error(e)
-        return jsonify({"msg": 'Internal server error'}), 500
+        return jsonify({"msg": 'Internal server error'}), HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 # Documentation
@@ -242,4 +243,4 @@ async def swagger():
             return jsonify(json.load(f))
     except Exception as e:
         current_app.logger.error(e)
-        return jsonify({"msg": 'Internal server error'}), 500
+        return jsonify({"msg": 'Internal server error'}), HTTPStatus.INTERNAL_SERVER_ERROR
