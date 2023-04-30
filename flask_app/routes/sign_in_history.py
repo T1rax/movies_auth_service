@@ -68,6 +68,5 @@ def add_history(request, user_id, action):
     try:
         db.session.add(user_history)
         db.session.commit()
-        return True
     except Exception as e:
         raise HistoryException("History error", e)
