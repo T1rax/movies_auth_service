@@ -5,15 +5,15 @@ import flask
 
 
 def test_sign_in_route(mocker, generate_fake_user):
-    request = {'login': 'test_user', 'password':'123qwer'}
+    request = {"login": "test_user", "password": "123qwer"}
 
     fake_user = generate_fake_user
-    fake_user.login = request['login']
-    fake_user.password = request['password']
+    fake_user.login = request["login"]
+    fake_user.password = request["password"]
 
-    request_mock = mocker.patch.object(flask, 'request')
+    request_mock = mocker.patch.object(flask, "request")
     request_mock.return_value = request
-    
+
     mock_login_user = mocker.patch("blueprints.basic_endpoints.login_user")
     mock_login_user.return_value = fake_user
 

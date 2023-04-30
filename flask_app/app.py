@@ -23,10 +23,10 @@ app = Flask(__name__)
 # Set App variables
 set_flask_configuration(app)
 
-#Blueprints
-app.register_blueprint(basic_endpoints_v1, url_prefix='/auth/v1')
+# Blueprints
+app.register_blueprint(basic_endpoints_v1, url_prefix="/auth/v1")
 app.register_blueprint(bash_endpoints_v1)
-app.register_blueprint(swaggerui_blueprint) 
+app.register_blueprint(swaggerui_blueprint)
 
 # Registry OAuth
 register_oauth_apps(app)
@@ -38,7 +38,7 @@ migrate = Migrate(app, db)
 # Encryption
 jwt = create_jwt(app)
 
-# Performance logging 
+# Performance logging
 if configs.rpm.need_to_launch:
     set_rpm_limit(app)
 
@@ -49,5 +49,5 @@ if configs.tracing.need_to_launch:
 register_docs(app)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run()

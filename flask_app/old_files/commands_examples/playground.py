@@ -12,7 +12,7 @@ import requests
 # # data_login = {'login': 'test_login1',
 # #               'password': 'test_password'}
 # # response1 = requests.post('http://127.0.0.1/auth/sign-in', json=data_login)
-response1 = requests.post('http://127.0.0.1/auth/sign-in')
+response1 = requests.post("http://127.0.0.1/auth/sign-in")
 # #
 # data_desc = {'id': '10dd44fb-ff6d-4b20-80be-b72ecebc3603'}
 # response = requests.get('http://127.0.0.1/auth/get-user-description', cookies=response1.cookies, json=data_desc)
@@ -29,8 +29,6 @@ response1 = requests.post('http://127.0.0.1/auth/sign-in')
 # print(response.text)
 # print('-----------------------------')
 # print(response.cookies)
-
-
 
 
 # Вова
@@ -67,12 +65,12 @@ response1 = requests.post('http://127.0.0.1/auth/sign-in')
 # print('-----------------------------')
 # print(response.cookies)
 
-response1 = requests.get('http://127.0.0.1/auth/')
+response1 = requests.get("http://127.0.0.1/auth/")
 print(response1.status_code)
 
 for i in range(21):
-	response = requests.get('http://127.0.0.1/auth/', cookies=response1.cookies)
-	print(response.status_code)
+    response = requests.get("http://127.0.0.1/auth/", cookies=response1.cookies)
+    print(response.status_code)
 
 
 # https://oauth.vk.com/access_token?client_id=51618569&client_secret=5JsC4EdJQUJOxCV4XU0t&redirect_uri=http://127.0.0.1/auth/vk/callback&code=

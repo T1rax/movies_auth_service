@@ -1,6 +1,10 @@
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import create_refresh_token, get_jwt
-from flask_jwt_extended import unset_jwt_cookies, set_access_cookies, set_refresh_cookies
+from flask_jwt_extended import (
+    unset_jwt_cookies,
+    set_access_cookies,
+    set_refresh_cookies,
+)
 
 from flask_jwt_extended import get_jwt, get_jwt_header
 from flask_jwt_extended import JWTManager
@@ -15,7 +19,7 @@ from database.models import User
 from performance.tracing.tracer import trace_it
 
 
-class JWTHelper():
+class JWTHelper:
     def __init__(self):
         self.user_id = "example_user"
         self.user = None
@@ -40,7 +44,9 @@ class JWTHelper():
     @trace_it
     def create_tokens(self):
         claims = self.get_additional_claims()
-        self.access_token = create_access_token(identity=self.user_id, additional_claims=claims)
+        self.access_token = create_access_token(
+            identity=self.user_id, additional_claims=claims
+        )
         self.refresh_token = create_refresh_token(identity=self.user_id)
 
     @trace_it
@@ -49,7 +55,7 @@ class JWTHelper():
 
         jti = get_jwt()["jti"]
         token_exp = dt.fromtimestamp(get_jwt()["exp"])
-        ex = token_exp-dt.now()
+        ex = token_exp - dt.now()
 
         jwt_redis_blocklist.set(jti, "", ex=ex)
 
@@ -58,10 +64,9 @@ jwt_helper = JWTHelper()
 
 
 def create_jwt(app):
-
     jwt = JWTManager(app)
 
-    #JWT tokens
+    # JWT tokens
     # Using an `after_request` callback, we refresh any token that is within 10
     # minutes of expiring.
     @app.after_request
@@ -79,7 +84,6 @@ def create_jwt(app):
             # Case where there is not a valid JWT. Just return the original response
             return response
 
-
     # Callback function to check if a JWT exists in the redis blocklist
     # Applies for every call of @jwt_required
     @jwt.token_in_blocklist_loader
@@ -87,5 +91,5 @@ def create_jwt(app):
         jti = jwt_payload["jti"]
         token_in_redis = jwt_redis_blocklist.get(jti)
         return token_in_redis is not None
-    
+
     return jwt

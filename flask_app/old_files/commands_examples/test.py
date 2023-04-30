@@ -2,7 +2,8 @@ from pydantic import BaseModel
 
 
 class FakeUser(BaseModel):
-    id: str = '1235'
+    id: str = "1235"
+
 
 fake_user = FakeUser()
 
