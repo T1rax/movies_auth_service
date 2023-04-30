@@ -2,6 +2,7 @@ from datetime import datetime as dt
 from flask import request, current_app, jsonify
 from flask_jwt_extended import get_jwt
 from uuid import uuid4
+from http import HTTPStatus
 
 from core.config import configs
 from database.db import request_limit_storage
@@ -39,9 +40,9 @@ def set_rpm_limit(app) -> None:
             result = pipe.execute()
 
             request_number = result[0]
-            if request_number > configs.main.rpm:
+            if request_number > configs.rpm.limit:
                 current_app.logger.info('Requests per minute limit exceeded')
-                return jsonify({"msg": 'Requests per minute limit exceeded'}), 429
+                return jsonify({"msg": 'Requests per minute limit exceeded'}), HTTPStatus.TOO_MANY_REQUESTS
 
         
     @app.after_request

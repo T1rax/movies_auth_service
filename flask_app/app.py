@@ -9,6 +9,7 @@ from blueprints.v1.bash_endpoints.users import blueprint as bash_endpoints_v1
 from blueprints.v1.basic_endpoints.swagger import swaggerui_blueprint
 from core.flask_configuration import set_flask_configuration
 from core.logger import set_up_logging
+from core.config import configs
 from encryption.jwt import create_jwt
 from performance.requests_limit.rpm import set_rpm_limit
 from performance.tracing.tracer import configure_tracer
@@ -38,8 +39,11 @@ migrate = Migrate(app, db)
 jwt = create_jwt(app)
 
 # Performance logging 
-set_rpm_limit(app)
-configure_tracer(app)
+if configs.rpm.need_to_launch:
+    set_rpm_limit(app)
+
+if configs.tracing.need_to_launch:
+    configure_tracer(app)
 
 # Documentation
 register_docs(app)

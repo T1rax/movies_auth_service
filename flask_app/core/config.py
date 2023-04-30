@@ -5,7 +5,6 @@ class MainConfig(BaseSettings):
     """ Project settings """
     log_level: str = Field('INFO')
     existing_roles: list = Field(['basicRole', 'premiumUser', 'admin', 'superUser'])
-    rpm: int = Field(20)
     pending_anonymous_id: str = Field(None)
     testing: bool = Field(False)
 
@@ -32,6 +31,13 @@ class TracingConfig(BaseSettings):
     """ Cache settings """
     host: str = Field('jaeger')
     port: int = Field(6831)
+    need_to_launch: bool = Field(True)
+
+
+class RpmConfig(BaseSettings):
+    """ Cache settings """
+    limit: int = Field(20)
+    need_to_launch: bool = Field(True)
 
 
 class GoogleOauth(BaseSettings):
@@ -64,8 +70,9 @@ class OauthApps(BaseSettings):
 class BaseConfig(BaseSettings):
     mds: MemoryDataStorageConfig = MemoryDataStorageConfig()
     db: DataBaseConfig = DataBaseConfig()
-    tracing: TracingConfig = TracingConfig()
     main: MainConfig = MainConfig()
+    tracing: TracingConfig = TracingConfig()
+    rpm: RpmConfig = RpmConfig()
     oauth: OauthApps = OauthApps()
 
     class Config:
