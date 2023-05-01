@@ -1,16 +1,36 @@
 import uuid
 import enum
 
-from sqlalchemy import Enum, UniqueConstraint, or_
+from sqlalchemy import or_, Enum, UniqueConstraint
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.sql import func
 from werkzeug.security import generate_password_hash, check_password_hash
 from device_detector import DeviceDetector
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 import string
 from secrets import choice as secrets_choice
-from datetime import datetime
 
 from database.db import db
 from performance.tracing.tracer import trace_it
+
+
+def create_history_date_partitions(target, connection, **kw) -> None:
+    """creating partition by history"""
+    ptn_start_date = datetime(2023, 1, 1)
+
+    for i in range(12):
+        ptn_year = ptn_start_date.strftime("%y")
+        ptn_month = ptn_start_date.strftime("%m")
+        ptn_start = ptn_start_date.strftime("%Y-%m-%d")
+        ptn_end_date = ptn_start_date + relativedelta(months=1)
+        ptn_end = ptn_end_date.strftime("%Y-%m-%d")
+
+        partition_str = f"CREATE TABLE IF NOT EXISTS history_{ptn_year}_{ptn_month} PARTITION OF histories FOR VALUES FROM ('{ptn_start}') TO ('{ptn_end}')"
+
+        connection.execute(partition_str)
+
+        ptn_start_date = ptn_end_date
 
 
 class User(db.Model):
@@ -87,6 +107,13 @@ class UserHistory(db.Model):
     """Model for recording user login history"""
 
     __tablename__ = "histories"
+    __table_args__ = (
+        # Index('history_user_id', "user_id"),
+        {
+            "postgresql_partition_by": "RANGE (ptn_dadd)",
+            "listeners": [("after_create", create_history_date_partitions)],
+        }
+    )
 
     id = db.Column(
         UUID(as_uuid=True),
@@ -95,13 +122,14 @@ class UserHistory(db.Model):
         unique=True,
         nullable=False,
     )
-    user_device_type = db.Column(db.Text, primary_key=True, nullable=False)
+    user_device_type = db.Column(db.Text, nullable=False)
     useragent = db.Column(db.String(500), nullable=False)
     remote_addr = db.Column(db.String(500), nullable=False)
     referrer = db.Column(db.String(500), nullable=True)
     action = db.Column(Enum(ActionType))
-    timestamp = db.Column(db.DateTime, default=datetime.now())
-    user_id = db.Column(UUID(as_uuid=True), db.ForeignKey("users.id"))
+    timestamp = db.Column(db.DateTime, server_default=func.now())
+    user_id = db.Column(UUID(as_uuid=True), db.ForeignKey("users.id"), index=True)
+    ptn_dadd = db.Column(db.Date, primary_key=True, server_default=func.now())
 
     def __repr__(self):
         return f"<UserHistory {self.user_id}>"
